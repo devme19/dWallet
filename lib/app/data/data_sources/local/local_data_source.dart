@@ -1,4 +1,5 @@
 import 'package:dwallet/app/core/exception.dart';
+import 'package:encrypt/encrypt.dart';
 import 'package:get_storage/get_storage.dart';
 
 abstract class AppLocalDataSource {
@@ -13,6 +14,9 @@ abstract class AppLocalDataSource {
   bool getThemeMode();
   bool setLanguage(bool isEn);
   bool getLanguage();
+
+  bool savePrivateKey(String key);
+  String getPrivateKey();
 }
 
 class AppLocalDateSourceImpl implements AppLocalDataSource {
@@ -22,7 +26,14 @@ class AppLocalDateSourceImpl implements AppLocalDataSource {
   String refreshTokenKey = "refreshTokenKey";
   String themeKey = "themeKey";
   String langKey = "langKey";
-
+  String privateKey = "privateKey";
+  final _key = Key.fromUtf8('my 32 length key................');
+  final _iv = IV.fromLength(16);
+  Encrypter? encrypter;
+  Encrypted? encrypted;
+  AppLocalDateSourceImpl(){
+    encrypter = Encrypter(AES(_key));
+  }
   @override
   String getProfile() {
     try {
@@ -126,6 +137,29 @@ class AppLocalDateSourceImpl implements AppLocalDataSource {
   bool setLanguage(bool isEn) {
     try {
       box.write(langKey, isEn);
+      return true;
+    } catch (e) {
+      throw CacheException(message: e.toString());
+    }
+  }
+
+  @override
+  String getPrivateKey() {
+    try {
+      String enc = box.read(privateKey);
+      String decrypted = encrypter!.decrypt(encrypted, iv: iv).toString();
+      return box.read(privateKey) ?? "";
+    } catch (e) {
+      throw CacheException(message: e.toString());
+    }
+  }
+
+  @override
+  bool savePrivateKey(String key) {
+
+    encrypted = encrypter!.encrypt(key, iv: _iv);
+    try {
+      box.write(privateKey, encrypted.toString());
       return true;
     } catch (e) {
       throw CacheException(message: e.toString());

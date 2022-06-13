@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
       GetMaterialApp(
       builder: DevicePreview.appBuilder,
       getPages: App.pages,
-      title: 'Flutter Clean Architecture',
+      title: 'dWallet',
       theme: Themes.dark,
       locale: isEn ? const Locale('en', 'US') : const Locale('fa', 'IR'),
       darkTheme: Themes.dark,

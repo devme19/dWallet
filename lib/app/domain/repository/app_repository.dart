@@ -12,4 +12,7 @@ abstract class AppRepository {
   Future<Either<Failure, bool>> getThemeMode();
   Future<Either<Failure, bool>> setLanguage(bool isEn);
   Future<Either<Failure, bool>> getLanguage();
+  /////////////////////  SPLASH /////////////////////////
+  Future<Either<Failure, bool>> savePrivateKey(String key);
+  Future<Either<Failure, String>> getPrivateKey();
 }

@@ -83,4 +83,25 @@ class AppRepositoryImpl implements AppRepository {
       return Left(CacheFailure(message: e.toString()));
     }
   }
+
+  ////////////////////// Private Key ///////////////
+  @override
+  Future<Either<Failure, String>> getPrivateKey() async{
+    try {
+      String response = localDataSource!.getPrivateKey();
+      return Right(response);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> savePrivateKey(String key) async{
+    try {
+      bool response = localDataSource!.savePrivateKey(key);
+      return Right(response);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.toString()));
+    }
+  }
 }
