@@ -17,6 +17,27 @@ dependencies:
   flutter_svg: ^1.1.0
   page_view_indicators: ^2.0.0
   device_preview: ^1.1.0
+
+#  web3
+  build: ^2.0.0
+  build_config: ^1.0.0
+  dart_style: ^2.0.0
+  code_builder: ^4.0.0
+  path: ^1.8.0
+  built_collection: ^5.0.0
+  pointycastle: ^3.4.0
+  convert: ^3.0.0
+  meta: ^1.1.0
+  http: ^0.13.0
+  js: ^0.6.3
+  uuid: ^3.0.1
+  typed_data: ^1.1.6
+  stream_channel: ^2.0.0
+  stream_transform: ^2.0.0
+  json_rpc_2: ^3.0.0
+  collection: ^1.14.11
+  bip39: ^1.0.6
+  bip32: ^2.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
