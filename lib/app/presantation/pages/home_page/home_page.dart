@@ -21,7 +21,8 @@ class HomePage extends GetView<WalletController> {
               LiquidPullToRefresh(
                   showChildOpacityTransition: false,
                   color: Themes.dark.primaryColor,
-                  // height: 50,
+                  springAnimationDurationInMilliseconds: 300,
+                  height: 60,
                   onRefresh: onRefresh,
                   child: BgWidget(child: body()))
           ),
