@@ -1,5 +1,6 @@
 import 'package:dwallet/app/core/either.dart';
 import 'package:dwallet/app/core/failures.dart';
+import 'package:dwallet/app/data/models/coin_model.dart';
 import 'package:dwallet/app/data/models/verification_model.dart';
 
 abstract class AppRepository {
@@ -7,7 +8,7 @@ abstract class AppRepository {
   Future<Either<Failure, bool>> login(Map<String, dynamic> body);
   Future<Either<Failure, VerificationModel>> verification(
       Map<String, dynamic> body);
-  ///////////////////// SETTING /////////////////////////
+  /////////////////////  SETTING /////////////////////////
   Future<Either<Failure, bool>> setThemeMode(bool isDark);
   Future<Either<Failure, bool>> getThemeMode();
   Future<Either<Failure, bool>> setLanguage(bool isEn);
@@ -15,4 +16,6 @@ abstract class AppRepository {
   /////////////////////  SPLASH /////////////////////////
   Future<Either<Failure, bool>> savePrivateKey(String key);
   Future<Either<Failure, String>> getPrivateKey();
+  /////////////////////  Tokens ///////////////////////////
+  Future<Either<Failure, List<CoinModel>>> getTokenInfo(Map<String,dynamic> parameters);
 }

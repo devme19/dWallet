@@ -4,6 +4,7 @@ import 'package:dwallet/app/core/failures.dart';
 import 'package:dwallet/app/core/either.dart';
 import 'package:dwallet/app/data/data_sources/local/local_data_source.dart';
 import 'package:dwallet/app/data/data_sources/remote/remote_data_source.dart';
+import 'package:dwallet/app/data/models/coin_model.dart';
 import 'package:dwallet/app/data/models/verification_model.dart';
 import 'package:dwallet/app/domain/repository/app_repository.dart';
 
@@ -102,6 +103,28 @@ class AppRepositoryImpl implements AppRepository {
       return Right(response);
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<CoinModel>>> getTokenInfo(Map<String,dynamic> parameters) async{
+    try {
+      Response response = await remoteDataSource!.get(url: "simple/price", queryParameters: parameters);
+      CoinModel coinModel;
+      List<CoinModel> list = [];
+      Map<String,dynamic> data = response.data;
+      for (var key in data.keys) {
+        coinModel = CoinModel.fromJson2(response.data[key]);
+        coinModel.name = key;
+        list.add(coinModel);
+        //print("array_key" + key);
+
+      }
+
+      return Right(list);
+    } on ServerException catch (e) {
+      return Left(
+          ServerFailure(errorCode: e.errorCode, errorMessage: e.errorMessage));
     }
   }
 }

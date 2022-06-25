@@ -1,4 +1,5 @@
 import 'package:dwallet/app/core/exception.dart';
+import 'package:dwallet/app/data/models/coin_model.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -27,13 +28,11 @@ class AppLocalDateSourceImpl implements AppLocalDataSource {
   String themeKey = "themeKey";
   String langKey = "langKey";
   String privateKey = "privateKey";
+  String defaultCoins = "defaultCoins";
   final _key = Key.fromUtf8('my 32 length key................');
   final _iv = IV.fromLength(16);
   Encrypter? encrypter;
   Encrypted? encrypted;
-  AppLocalDateSourceImpl(){
-    encrypter = Encrypter(AES(_key));
-  }
   @override
   String getProfile() {
     try {
@@ -146,8 +145,8 @@ class AppLocalDateSourceImpl implements AppLocalDataSource {
   @override
   String getPrivateKey() {
     try {
-      String enc = box.read(privateKey);
-      String decrypted = encrypter!.decrypt(encrypted, iv: iv).toString();
+      // String enc = box.read(privateKey);
+      // String decrypted = encrypter!.decrypt(enc, iv: iv).toString();
       return box.read(privateKey) ?? "";
     } catch (e) {
       throw CacheException(message: e.toString());
@@ -157,12 +156,14 @@ class AppLocalDateSourceImpl implements AppLocalDataSource {
   @override
   bool savePrivateKey(String key) {
 
-    encrypted = encrypter!.encrypt(key, iv: _iv);
+    // encrypted = encrypter!.encrypt(key, iv: _iv);
     try {
-      box.write(privateKey, encrypted.toString());
+      box.write(privateKey, key);
       return true;
     } catch (e) {
       throw CacheException(message: e.toString());
     }
   }
+
+
 }

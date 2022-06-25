@@ -32,7 +32,7 @@ void main() async {
   isEn = await getLanguage();
   await getThemeMode();
   runApp(DevicePreview(
-    enabled: true,
+    enabled: false,
     builder: (context) => MyApp(),
   ));
 }
@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
       locale: isEn ? const Locale('en', 'US') : const Locale('fa', 'IR'),
       darkTheme: Themes.dark,
       themeMode: ThemeMode.system,
-      initialRoute: AppRoutes.introPage,
+      initialRoute: AppRoutes.splashPage,
 
       translations: Messages(),
       fallbackLocale: const Locale('en', 'US'),

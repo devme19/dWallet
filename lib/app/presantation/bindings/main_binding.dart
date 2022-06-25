@@ -1,11 +1,15 @@
+import 'package:dwallet/app/domain/use_cases/home/get_coins_info_usecase.dart';
+import 'package:dwallet/app/domain/use_cases/private_key/save_private_key_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/setting/theme/get_theme_mode_use_case.dart';
 import 'package:dwallet/app/presantation/controllers/setting_controller.dart';
+import 'package:dwallet/app/presantation/controllers/wallet_controller.dart';
 import 'package:get/get.dart';
 
 import '../../data/data_sources/local/local_data_source.dart';
 import '../../data/data_sources/remote/remote_data_source.dart';
 import '../../data/repository/app_repository_impl.dart';
 import '../../domain/repository/app_repository.dart';
+import '../../domain/use_cases/private_key/get_private_key_usecase.dart';
 import '../../domain/use_cases/setting/language/get_language_use_case.dart';
 
 class MainBinding extends Bindings {
@@ -20,5 +24,12 @@ class MainBinding extends Bindings {
         GetLanguageUseCase(repository: Get.find<AppRepository>()));
     Get.put<GetThemeModeUseCase>(
         GetThemeModeUseCase(repository: Get.find<AppRepository>()));
+    Get.put<SavePrivateKeyUseCase>(
+        SavePrivateKeyUseCase(repository: Get.find<AppRepository>()));
+    Get.put<GetPrivateKeyUseCase>(
+        GetPrivateKeyUseCase(repository: Get.find<AppRepository>()));
+    Get.put<GetCoinInfoUseCase>(
+        GetCoinInfoUseCase(repository: Get.find<AppRepository>()));
+    Get.put<WalletController>(WalletController());
   }
 }

@@ -1,9 +1,11 @@
+import 'package:dwallet/app/presantation/routes/app_routes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:dwallet/app/presantation/pages/base_widget.dart';
+import 'package:dwallet/app/presantation/pages/global_widgets/bg_widget.dart';
 import 'package:dwallet/app/presantation/pages/intro_page/widget/page_view_widget.dart';
 import 'package:dwallet/app/presantation/theme/themes.dart';
+
+import '../../utils/globals.dart';
 
 class IntroPage extends StatelessWidget{
   const IntroPage({Key? key}) : super(key: key);
@@ -17,41 +19,56 @@ class IntroPage extends StatelessWidget{
               ? Themes.dark.backgroundColor
               : Themes.light.backgroundColor,
           body:
-          BaseWidget(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const SizedBox(),
-                const SizedBox(
-                  height: 400,
-                  width: double.infinity,
-                  child: PageViewWidget(),
-                ),
-                Column(
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20.0),
+          BgWidget(
+            child: Padding(
+              padding: EdgeInsets.all(mainPadding),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const SizedBox(),
+                  const SizedBox(
+                    height: 400,
+                    width: double.infinity,
+                    child: PageViewWidget(),
+                  ),
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
                             child: ElevatedButton(
-                              onPressed: () {},
-                              child: Text("Create a new wallet"),
+                              onPressed: () => Get.toNamed(AppRoutes.agreementPage),
+                              child: const Text("Create a new wallet"),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          "I already have a wallet",
-                          style: Themes.dark.textTheme.subtitle2,
-                        ))
-                  ],
-                )
-              ],
+                        ],
+                      ),
+                      const SizedBox(height: 16.0,),
+                      InkWell(
+                          borderRadius: BorderRadius.circular(BUTTON_RADIUS),
+                          onTap: () => Get.toNamed(AppRoutes.importWalletPage),
+                          child:
+                          Row(
+                            children: [
+                              Expanded(
+                                child:
+                                Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                    child: Text(
+                                      "I already have a wallet",
+                                      style: Themes.dark.textTheme.subtitle2,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )),
+                      const SizedBox(height: 16.0,),
+                    ],
+                  )
+                ],
+              ),
             ),
           )
       ),

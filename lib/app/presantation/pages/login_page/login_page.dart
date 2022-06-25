@@ -1,7 +1,7 @@
+import 'package:dwallet/app/presantation/pages/login_page/widgets/enter_phone_number_widget.dart';
+import 'package:dwallet/app/presantation/pages/login_page/widgets/phone_verfication_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:dwallet/app/presantation/controllers/auth_controller.dart';
-import 'package:dwallet/app/presantation/pages/login/widgets/enter_phone_number_widget.dart';
-import 'package:dwallet/app/presantation/pages/login/widgets/phone_verfication_widget.dart';
 import 'package:dwallet/app/presantation/routes/app_routes.dart';
 import 'package:dwallet/app/presantation/theme/themes.dart';
 import 'package:dwallet/app/presantation/utils/state_status.dart';
