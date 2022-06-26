@@ -3,10 +3,13 @@ import 'package:dwallet/app/core/exception.dart';
 import 'package:dwallet/app/core/failures.dart';
 import 'package:dwallet/app/core/either.dart';
 import 'package:dwallet/app/data/data_sources/local/local_data_source.dart';
+import 'package:dwallet/app/data/data_sources/remote/client.dart';
 import 'package:dwallet/app/data/data_sources/remote/remote_data_source.dart';
 import 'package:dwallet/app/data/models/coin_model.dart';
 import 'package:dwallet/app/data/models/verification_model.dart';
 import 'package:dwallet/app/domain/repository/app_repository.dart';
+
+import '../../web3/web3dart.dart';
 
 class AppRepositoryImpl implements AppRepository {
   final AppLocalDataSource? localDataSource;
@@ -125,6 +128,45 @@ class AppRepositoryImpl implements AppRepository {
     } on ServerException catch (e) {
       return Left(
           ServerFailure(errorCode: e.errorCode, errorMessage: e.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, double>> getBalance(String apiUrl) async{
+    try {
+      String privateKey = localDataSource!.getPrivateKey();
+      EthPrivateKey credentials = EthPrivateKey.fromHex(privateKey);
+      EtherAmount balance = await Client().web3(apiUrl).getBalance(credentials.address);
+      print(credentials.address);
+      print(balance.getValueInUnit(EtherUnit.ether));
+      return Right(balance.getValueInUnit(EtherUnit.ether));
+  }catch (e) {
+      return Left(
+          ServerFailure(errorMessage: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> sendTransaction(Map<String,dynamic> body) async{
+    try {
+      String privateKey = localDataSource!.getPrivateKey();
+      String apiUrl = body['apiUrl'];
+      String receiveAddress = body['receiveAddress'];
+      double amount = body['amount'];
+      EthPrivateKey credentials = EthPrivateKey.fromHex(privateKey);
+      String txHash = await Client().web3(apiUrl).sendTransaction(
+        credentials,
+        Transaction(
+          to: EthereumAddress.fromHex(receiveAddress),
+          gasPrice: EtherAmount.inWei(BigInt.one),
+          maxGas: 100000,
+          value: EtherAmount.fromUnitAndValue(EtherUnit.ether, amount),
+        ),
+      );
+      return Right(txHash);
+    }catch (e) {
+      return Left(
+          ServerFailure(errorMessage: e.toString()));
     }
   }
 }

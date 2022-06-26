@@ -2,6 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:dwallet/app/core/config.dart';
 import 'package:dwallet/app/data/interceptors/refresh_token_interceptor.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:http/http.dart' as http;
+
+import '../../../web3/web3dart.dart';
+
 
 class Client {
   static final Client _client = Client._internal();
@@ -11,6 +15,11 @@ class Client {
   Client._internal();
   Dio dio = Dio();
   GetStorage? box;
+
+  http.Client httpClient = http.Client();
+  Web3Client web3(String url){
+    return Web3Client(url, httpClient);
+  }
   init() {
     dio.options.baseUrl = baseUrl;
     dio.options.connectTimeout = 50000;

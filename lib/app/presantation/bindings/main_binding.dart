@@ -1,3 +1,4 @@
+import 'package:dwallet/app/domain/use_cases/home/get_balance_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_coins_info_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/private_key/save_private_key_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/setting/theme/get_theme_mode_use_case.dart';
@@ -30,6 +31,8 @@ class MainBinding extends Bindings {
         GetPrivateKeyUseCase(repository: Get.find<AppRepository>()));
     Get.put<GetCoinInfoUseCase>(
         GetCoinInfoUseCase(repository: Get.find<AppRepository>()));
+    Get.put<GetBalanceUseCase>(
+        GetBalanceUseCase(repository: Get.find<AppRepository>()));
     Get.put<WalletController>(WalletController());
   }
 }

@@ -18,4 +18,6 @@ abstract class AppRepository {
   Future<Either<Failure, String>> getPrivateKey();
   /////////////////////  Tokens ///////////////////////////
   Future<Either<Failure, List<CoinModel>>> getTokenInfo(Map<String,dynamic> parameters);
+  Future<Either<Failure, double>> getBalance(String apiUrl);
+  Future<Either<Failure, String>> sendTransaction(Map<String,dynamic> body);
 }

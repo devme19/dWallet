@@ -1,8 +1,12 @@
 import 'dart:typed_data';
 
+import 'package:dio/dio.dart';
+import 'package:dwallet/app/core/either.dart';
 import 'package:dwallet/app/core/use_case.dart';
 import 'package:dwallet/app/data/models/coin_model.dart';
+import 'package:dwallet/app/domain/use_cases/home/get_balance_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_coins_info_usecase.dart';
+import 'package:dwallet/app/domain/use_cases/home/send_transaction_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/private_key/get_private_key_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/private_key/save_private_key_usecase.dart';
 import 'package:dwallet/app/presantation/pages/secret_phrase_page/widget/secret_phrase_item_widget.dart';
@@ -12,8 +16,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:bip39/bip39.dart' as bip39;
-import 'package:http/http.dart';
-
 import '../../web3/src/crypto/formatting.dart';
 import '../../web3/web3dart.dart';
 class WalletController extends GetxController{
@@ -183,15 +185,12 @@ class WalletController extends GetxController{
     savePrivateKey();
   }
    Future<double> getBalance(String url)async{
-    // var apiUrl = "https://data-seed-prebsc-1-s3.binance.org:8545"; //Replace with your API
-     await getPrivateKey();
-     var httpClient = Client();
-    var ethClient = Web3Client(url, httpClient);
-    var credentials = EthPrivateKey.fromHex(privateKey!);
-    EtherAmount balance = await ethClient.getBalance(credentials.address);
-    print(credentials.address);
-    print(balance.getValueInUnit(EtherUnit.ether));
-    return balance.getValueInUnit(EtherUnit.ether);
+     GetBalanceUseCase getBalanceUseCase  = Get.find();
+     Either response= await getBalanceUseCase.call(Params(value: url));
+     if(response.isRight){
+        return response.right;
+     }
+     return 0;
   }
 
   add(SecretItem item){
@@ -296,5 +295,21 @@ class WalletController extends GetxController{
     return false;
   }
 
+  sendTransaction(String receiveAddress,double amount,String apiUrl){
+   SendTransactionUseCase sendTransaction = Get.find();
+   Map<String,dynamic> body = {
+     'receiveAddress':receiveAddress,
+     'amount':amount,
+     'apiUrl':apiUrl
+   };
+   sendTransaction.call(Params(body: body)).then((response){
+     if(response.isRight){
+       print('TxHash ${response.right}');
+     }else if(response.isLeft){
+
+     }
+   });
+
+  }
 
 }

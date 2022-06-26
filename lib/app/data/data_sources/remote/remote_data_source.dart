@@ -9,6 +9,7 @@ abstract class AppRemoteDataSource {
   Future<bool> delete({String url});
   Future<bool> requestMultiPart(
       {String url, FormData formData, ValueChanged<double> uploadedAmount});
+
 }
 
 class AppRemoteDataSourceImpl implements AppRemoteDataSource {

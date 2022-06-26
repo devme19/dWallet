@@ -283,7 +283,8 @@ class HomePage extends GetView<WalletController> {
             return SliverList(
               delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
-                  return TokenItemWidget(
+                  return
+                    TokenItemWidget(
                     coin: walletController.coins[index],
                   );
                 },
