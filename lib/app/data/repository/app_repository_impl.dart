@@ -5,6 +5,7 @@ import 'package:dwallet/app/core/either.dart';
 import 'package:dwallet/app/data/data_sources/local/local_data_source.dart';
 import 'package:dwallet/app/data/data_sources/remote/client.dart';
 import 'package:dwallet/app/data/data_sources/remote/remote_data_source.dart';
+import 'package:dwallet/app/data/models/coin_historical_data_model.dart';
 import 'package:dwallet/app/data/models/coin_model.dart';
 import 'package:dwallet/app/data/models/verification_model.dart';
 import 'package:dwallet/app/domain/repository/app_repository.dart';
@@ -167,6 +168,18 @@ class AppRepositoryImpl implements AppRepository {
     }catch (e) {
       return Left(
           ServerFailure(errorMessage: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, CoinHistoricalDataModel>> getHistoricalData(Map<String, dynamic> parameters) async{
+    try {
+      String id= parameters['id'];
+      Response response = await remoteDataSource!.get(url: "coins/$id/market_chart", queryParameters: parameters);
+      return Right(CoinHistoricalDataModel.fromJson(response.data));
+    } on ServerException catch (e) {
+      return Left(
+          ServerFailure(errorCode: e.errorCode, errorMessage: e.errorMessage));
     }
   }
 }

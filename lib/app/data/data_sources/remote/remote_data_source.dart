@@ -38,8 +38,7 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
   Future<Response> get(
       {String? url, Map<String, dynamic>? queryParameters}) async {
     try {
-      Response response =
-          await Client().dio.get(url!, queryParameters: queryParameters!);
+      Response response = await Client().dio.get(url!, queryParameters: queryParameters!);
       return response;
     } on DioError catch (e) {
       if (e.type == DioErrorType.other) {

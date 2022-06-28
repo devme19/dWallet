@@ -41,6 +41,9 @@ dependencies:
   encrypt: ^5.0.1
   fluttertoast: ^8.0.9
   liquid_pull_to_refresh: ^3.0.1
+  syncfusion_flutter_charts: ^20.1.61
+  searchable_listview: ^1.6.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

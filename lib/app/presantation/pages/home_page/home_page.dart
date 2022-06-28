@@ -1,13 +1,16 @@
 import 'package:dwallet/app/presantation/controllers/wallet_controller.dart';
+import 'package:dwallet/app/presantation/pages/add_custom_token_page/add_custom_token_page.dart';
 import 'package:dwallet/app/presantation/pages/global_widgets/bg_widget.dart';
 import 'package:dwallet/app/presantation/pages/home_page/widget/token_item_widget.dart';
 import 'package:dwallet/app/presantation/theme/themes.dart';
-import 'package:dwallet/app/presantation/utils/state_status.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
+import 'package:path/path.dart';
 class HomePage extends GetView<WalletController> {
-  HomePage({Key? key}) : super(key: key);
+  HomePage({Key? key}) : super(key: key){
+    controller.getCoinsInfo();
+  }
   double top =0.0;
   bool visibility = true;
   @override
@@ -29,16 +32,15 @@ class HomePage extends GetView<WalletController> {
       );
   }
 
-  Future<void> onRefresh()async{
+  Future<void> onRefresh()async=>
     controller.getCoinsInfo();
-  }
   Widget body(){
     return GetBuilder<WalletController>(builder: (controller){
       return
       CustomScrollView(
         slivers: [
           SliverAppBar(
-            backgroundColor:Colors.black87,
+            backgroundColor:Colors.transparent,
             expandedHeight: 250.0,
             floating: false,
             pinned: true,
@@ -195,10 +197,10 @@ class HomePage extends GetView<WalletController> {
               child:
               Container(
                 padding: const EdgeInsets.only(bottom: 20.0),
-                margin: EdgeInsets.only(bottom: 6),
-                decoration: const BoxDecoration(
-                    color: Color(0xff1C1C1E),
-                    borderRadius: BorderRadius.only(
+                margin: const EdgeInsets.only(bottom: 6),
+                decoration: BoxDecoration(
+                    color: IColor().DARK_BG_COLOR,
+                    borderRadius: const BorderRadius.only(
                       topRight: Radius.circular(30),
                       topLeft: Radius.circular(30),
                     )
@@ -223,9 +225,18 @@ class HomePage extends GetView<WalletController> {
                               fontSize: 20, color: IColor().DARK_TEXT_COLOR),
                         ),
                         InkWell(
-                          onTap: () {},
+                          onTap: () {
+
+                            showModalBottomSheet(
+                                backgroundColor: Colors.transparent,
+                                isScrollControlled: true,
+                                context: Get.context!,
+                                builder: (context) {
+                                  return AddCustomTokenPage();
+                                });
+                          },
                           child: Container(
-                            padding: EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 color: IColor()

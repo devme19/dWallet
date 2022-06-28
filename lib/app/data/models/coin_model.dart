@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:dwallet/app/data/models/coin_historical_data_model.dart';
+
 class CoinModel {
   String? name;
   String? symbol;
@@ -8,6 +10,9 @@ class CoinModel {
   List<String>? jrpcApi;
   String? imageUrl;
   double? balance=0;
+  CoinHistoricalDataModel? historicalData;
+
+  bool isSelected = false;
 
   double? usd;
   double? usdMarketCap;

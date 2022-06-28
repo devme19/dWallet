@@ -11,6 +11,7 @@ class Params {
   final bool? boolValue;
   final String? value;
   final String? title;
+  final String? id;
   final Map<String, dynamic>? body;
-  Params({this.value, this.title, this.body, this.boolValue});
+  Params({this.value, this.title, this.body, this.boolValue,this.id});
 }

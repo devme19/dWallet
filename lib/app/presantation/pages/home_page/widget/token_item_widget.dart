@@ -1,15 +1,30 @@
+import 'package:dwallet/app/data/models/coin_historical_data_model.dart';
 import 'package:dwallet/app/presantation/theme/themes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-
+import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../../../data/models/coin_model.dart';
 
 class TokenItemWidget extends StatelessWidget {
+  TooltipBehavior? _tooltipBehavior;
+
   TokenItemWidget({
     Key? key,
     this.coin,
-  }) : super(key: key);
+  }) : super(key: key){
+    _tooltipBehavior = TooltipBehavior(enable: true);
+    CoinHistoricalDataModel? historicalData = coin!.historicalData;
+    List<Point> points=[];
+    if(historicalData!=null) {
+      for (int i = 0; i < historicalData.prices!.length; i++) {
+        print(historicalData.prices![i][0]);
+        points.add(Point(date: i+1, price: historicalData.prices![i][1]));
+      }
+      coin!.historicalData!.points.addAll(points);
+      print("d");
+    }
+  }
   CoinModel? coin;
+  // List<charts.Series<Point, int>> seriesList=[];
 
   @override
   Widget build(BuildContext context) {
@@ -19,11 +34,11 @@ class TokenItemWidget extends StatelessWidget {
       padding: EdgeInsets.all(8.0),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: IColor().DARK_BUTTOM_COLOR.withOpacity(0.1)),
+          color: IColor().DARK_BG_COLOR),
       height: 160,
       child:
           Column(children: [
-            
+
             Expanded(
               child: Row(
                 children: [
@@ -114,19 +129,65 @@ class TokenItemWidget extends StatelessWidget {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(8.0),
-                      margin: const EdgeInsets.all(8.0),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4),
-                        color: IColor().Dark_CHECK_COLOR.withOpacity(0.2),
+                    coin!.historicalData!= null? 
+                    Expanded(
+                      child:
+                      SizedBox(
+                        width: 100,
+                        height: 300,
+                        child:
+                        SfCartesianChart(
+                            primaryXAxis: CategoryAxis(isVisible: false,),
+                            primaryYAxis: CategoryAxis(isVisible: false),
+                            tooltipBehavior: _tooltipBehavior,
+                            plotAreaBorderColor: Colors.transparent,
+
+                            series: <ChartSeries<Point, String>>[
+                              LineSeries<Point, String>(
+                                width: 0.2,
+                                  color: Colors.green,
+                                  dataSource: coin!.historicalData!.points,
+                                  xValueMapper: (Point sales, _) => sales.date.toString(),
+                                  yValueMapper: (Point sales, _) => sales.price,
+                                  // Enable data label
+                                  dataLabelSettings: const DataLabelSettings(isVisible: false))
+                            ]
+                        )
+                        // SfCartesianChart(
+                        //     primaryXAxis: CategoryAxis(isVisible: false,),
+                        //     primaryYAxis: CategoryAxis(isVisible: false),
+                        //     plotAreaBorderColor: Colors.transparent,
+                        //
+                        //     legend: Legend(isVisible: true),
+                        //     // Enable tooltip
+                        //     tooltipBehavior: TooltipBehavior(enable: true),
+                        //
+                        //     series: <ChartSeries<Point, String>>[
+                        //       LineSeries<Point, String>(
+                        //           dataSource: coin!.historicalData!.points,
+                        //           xValueMapper: (Point sales, _) => sales.date.toString(),
+                        //           yValueMapper: (Point sales, _) => sales.price,
+                        //           name: 'Sales',
+                        //           // Enable data label
+                        //           dataLabelSettings: DataLabelSettings(isVisible: false))
+                        //     ]
+                        //     ),
                       ),
-                      child: Text(
-                        'chart!',
-                        style: TextStyle(color: IColor().Dark_CHECK_COLOR),
-                      ),
-                    ),
+                    ):Container(),
+                    // charts.LineChart(),
+                    // Container(
+                    //   padding: const EdgeInsets.all(8.0),
+                    //   margin: const EdgeInsets.all(8.0),
+                    //   alignment: Alignment.center,
+                    //   decoration: BoxDecoration(
+                    //     borderRadius: BorderRadius.circular(4),
+                    //     color: IColor().Dark_CHECK_COLOR.withOpacity(0.2),
+                    //   ),
+                    //   child: Text(
+                    //     'chart!',
+                    //     style: TextStyle(color: IColor().Dark_CHECK_COLOR),
+                    //   ),
+                    // ),
                   ],
                 ),
               ],),
@@ -135,4 +196,9 @@ class TokenItemWidget extends StatelessWidget {
 
     );
   }
+}
+class SalesData {
+  SalesData(this.year, this.sales);
+  final String year;
+  final double sales;
 }

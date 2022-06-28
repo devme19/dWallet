@@ -1,11 +1,9 @@
-import 'dart:typed_data';
-
-import 'package:dio/dio.dart';
 import 'package:dwallet/app/core/either.dart';
 import 'package:dwallet/app/core/use_case.dart';
 import 'package:dwallet/app/data/models/coin_model.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_balance_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_coins_info_usecase.dart';
+import 'package:dwallet/app/domain/use_cases/home/get_historical_data_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/send_transaction_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/private_key/get_private_key_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/private_key/save_private_key_usecase.dart';
@@ -18,6 +16,7 @@ import 'package:get/get.dart';
 import 'package:bip39/bip39.dart' as bip39;
 import '../../web3/src/crypto/formatting.dart';
 import '../../web3/web3dart.dart';
+
 class WalletController extends GetxController{
   RxList secretPhraseList=[].obs;
   RxList shuffledSecretPhraseList=[].obs;
@@ -34,12 +33,8 @@ class WalletController extends GetxController{
   StateStatus getCoinsInfoStatus = StateStatus.INITIAL;
   double totalBalance = 0.0;
   List<CoinModel> coins=[];
+  RxString network = 'Ethereum'.obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-    getCoinsInfo();
-  }
   visibleSearchBar(){
     searchVisibility = true;
     update();
@@ -47,6 +42,35 @@ class WalletController extends GetxController{
   invisibleSearchBar(){
     searchVisibility = false;
     update();
+  }
+  getHistoricalData({CoinModel? coin,String? id,String? currency,int? days,String? interval}){
+    GetHistoricalDataUseCase getHistoricalDataUseCase = Get.find();
+    Map<String,dynamic> parameters={
+      'vs_currency':currency,
+      'days':days,
+      'interval':interval,
+      'id':id,
+    };
+    getHistoricalDataUseCase.call(Params(body: parameters)).then((response){
+      if(response.isRight){
+        print(response.right);
+        // final List<charts.Series<dynamic, num>> seriesList;
+        // charts.Series<response.right.prices, int>(
+        //   id: 'Sales',
+        //   colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+        //   domainFn: (LinearSales sales, _) => sales.year,
+        //   measureFn: (LinearSales sales, _) => sales.sales,
+        //   data: data,
+        // )
+        coin!.historicalData = response.right;
+        update();
+      }else if(response.isLeft){
+
+      }
+    });
+  }
+  onNetworkChange(String net){
+    network.value = net;
   }
   getCoinsInfo() {
     totalBalance = 0;
@@ -65,6 +89,7 @@ class WalletController extends GetxController{
       if(response.isRight){
         getCoinsInfoStatus = StateStatus.SUCCESS;
         for(CoinModel coin in response.right){
+
           switch (coin.name){
             case 'ethereum':
               coin.name = 'Ethereum';
@@ -132,7 +157,9 @@ class WalletController extends GetxController{
                 update();
               });
               break;
+
           }
+          getHistoricalData(coin: coin,id: coin.coingeckoId,currency: 'usd',days: 256,interval: 'daily');
         }
         coins.clear();
         coins.addAll(response.right);
@@ -141,7 +168,6 @@ class WalletController extends GetxController{
       }
       update();
     });
-
   }
   getDefaultCoins(){
     coins.add(CoinModel(name: 'Ethereum',symbol: 'ETH',chainId: '18',coingeckoId: 'ethereum',imageUrl: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png?1595348880',jrpcApi: [
@@ -295,7 +321,7 @@ class WalletController extends GetxController{
     return false;
   }
 
-  sendTransaction(String receiveAddress,double amount,String apiUrl){
+  sendTransaction({String? receiveAddress, double? amount, String? apiUrl}){
    SendTransactionUseCase sendTransaction = Get.find();
    Map<String,dynamic> body = {
      'receiveAddress':receiveAddress,
