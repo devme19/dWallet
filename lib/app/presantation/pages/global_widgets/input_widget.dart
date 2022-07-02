@@ -2,7 +2,9 @@ import 'package:dwallet/app/presantation/theme/themes.dart';
 import 'package:flutter/material.dart';
 
 class InputWidget extends StatelessWidget {
-  InputWidget({Key? key, required this.hint}) : super(key: key);
+  TextEditingController? controller;
+  ValueChanged<String>? onSubmit;
+  InputWidget({Key? key, required this.hint,this.controller,this.onSubmit}) : super(key: key);
   String? hint;
 
   @override
@@ -14,6 +16,8 @@ class InputWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           color: Colors.transparent),
       child: TextField(
+        onSubmitted: (value)=>onSubmit!(value),
+        controller:controller,
         decoration: InputDecoration(
             fillColor: Colors.transparent,
             hintText: hint,

@@ -21,7 +21,7 @@ class _ChooseNetworkPageState extends State<ChooseNetworkPage> {
     return widget.networks!
         .where(
           (element) =>
-      element.name!.toLowerCase().contains(searchTerm))
+      element.network!.toLowerCase().contains(searchTerm))
         .toList();
   }
   String? network;

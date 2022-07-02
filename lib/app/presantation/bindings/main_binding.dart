@@ -1,6 +1,7 @@
 import 'package:dwallet/app/domain/use_cases/home/get_balance_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_coins_info_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_historical_data_usecase.dart';
+import 'package:dwallet/app/domain/use_cases/home/get_token_name_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/private_key/save_private_key_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/setting/theme/get_theme_mode_use_case.dart';
 import 'package:dwallet/app/presantation/controllers/setting_controller.dart';
@@ -11,6 +12,8 @@ import '../../data/data_sources/local/local_data_source.dart';
 import '../../data/data_sources/remote/remote_data_source.dart';
 import '../../data/repository/app_repository_impl.dart';
 import '../../domain/repository/app_repository.dart';
+import '../../domain/use_cases/home/get_token_decimal_usecase.dart';
+import '../../domain/use_cases/home/get_token_symbol_usecase.dart';
 import '../../domain/use_cases/private_key/get_private_key_usecase.dart';
 import '../../domain/use_cases/setting/language/get_language_use_case.dart';
 
@@ -36,6 +39,12 @@ class MainBinding extends Bindings {
         GetBalanceUseCase(repository: Get.find<AppRepository>()));
     Get.put<GetHistoricalDataUseCase>(
         GetHistoricalDataUseCase(repository: Get.find<AppRepository>()));
+    Get.put<GetTokenNameUseCase>(
+        GetTokenNameUseCase(repository: Get.find<AppRepository>()));
+    Get.put<GetTokenSymbolUseCase>(
+        GetTokenSymbolUseCase(repository: Get.find<AppRepository>()));
+    Get.put<GetTokenDecimalUseCase>(
+        GetTokenDecimalUseCase(repository: Get.find<AppRepository>()));
     Get.put<WalletController>(WalletController());
 
   }

@@ -22,4 +22,7 @@ abstract class AppRepository {
   Future<Either<Failure, double>> getBalance(String apiUrl);
   Future<Either<Failure, String>> sendTransaction(Map<String,dynamic> body);
   Future<Either<Failure, CoinHistoricalDataModel>> getHistoricalData(Map<String,dynamic> parameters);
+  Future<Either<Failure, String>> getTokenName(String contractAddress,String apiUrl);
+  Future<Either<Failure, String>> getTokenSymbol(String contractAddress,String apiUrl);
+  Future<Either<Failure, String>> getTokenDecimal(String contractAddress,String apiUrl);
 }

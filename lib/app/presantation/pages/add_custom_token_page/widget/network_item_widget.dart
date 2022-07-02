@@ -19,7 +19,7 @@ class NetworkItemWidget extends StatelessWidget {
       InkWell(
         onTap: (){
           coin!.isSelected= !coin!.isSelected;
-          selectedNetwork!(coin!.name!);
+          selectedNetwork!(coin!.network!);
         },
         child: Container(
           margin: const EdgeInsets.symmetric(vertical: 5),
@@ -45,23 +45,13 @@ class NetworkItemWidget extends StatelessWidget {
                           color: Color(0xffF7931A)),
                       child: Image.network(coin!.imageUrl!),
                     ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 6),
-                          child: Text(
-                            coin!.name!,
-                            style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 6),
-                          child: Text(coin!.usd!.toString()),
-                        )
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6),
+                      child: Text(
+                        coin!.network!,
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w500),
+                      ),
                     ),
                   ],
                 ),
@@ -75,10 +65,10 @@ class NetworkItemWidget extends StatelessWidget {
                       activeColor: IColor().Dark_CHECK_COLOR.withOpacity(0.1),
                       checkColor: IColor().Dark_CHECK_COLOR,
                       splashRadius: 10,
-                      value: network == coin!.name!,
+                      value: network == coin!.network!,
                       onChanged: (value) {
                         coin!.isSelected= !coin!.isSelected;
-                        selectedNetwork!(coin!.name!);
+                        selectedNetwork!(coin!.network!);
                       }),
                 ),
                 // Switch(

@@ -11,6 +11,7 @@ class CoinModel {
   String? imageUrl;
   double? balance=0;
   CoinHistoricalDataModel? historicalData;
+  String? network;
 
   bool isSelected = false;
 

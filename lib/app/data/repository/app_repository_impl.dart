@@ -9,6 +9,7 @@ import 'package:dwallet/app/data/models/coin_historical_data_model.dart';
 import 'package:dwallet/app/data/models/coin_model.dart';
 import 'package:dwallet/app/data/models/verification_model.dart';
 import 'package:dwallet/app/domain/repository/app_repository.dart';
+import 'package:flutter/services.dart';
 
 import '../../web3/web3dart.dart';
 
@@ -180,6 +181,54 @@ class AppRepositoryImpl implements AppRepository {
     } on ServerException catch (e) {
       return Left(
           ServerFailure(errorCode: e.errorCode, errorMessage: e.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> getTokenName(String contractAddress,String apiUrl) async{
+    try {
+      final EthereumAddress cAddress = EthereumAddress.fromHex(contractAddress);
+      String abiCode = await rootBundle.loadString('assets/files/erc20.abi.json');
+      final contract = DeployedContract(ContractAbi.fromJson(abiCode, 'MetaCoin'), cAddress);
+      final nameFunction = contract.function('name');
+      final tokenName = await Client().web3(apiUrl).call(contract: contract, function: nameFunction,params: []);
+      print(tokenName);
+      return Right(tokenName[0]);
+    }catch (e) {
+      return Left(
+          ServerFailure(errorMessage: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> getTokenSymbol(String contractAddress, String apiUrl) async{
+    try {
+      final EthereumAddress cAddress = EthereumAddress.fromHex(contractAddress);
+      String abiCode = await rootBundle.loadString('assets/files/erc20.abi.json');
+      final contract = DeployedContract(ContractAbi.fromJson(abiCode, 'MetaCoin'), cAddress);
+      final symbolFunction = contract.function('symbol');
+      final tokenSymbol = await Client().web3(apiUrl).call(contract: contract, function: symbolFunction,params: []);
+      print(tokenSymbol);
+      return Right(tokenSymbol[0]);
+    }catch (e) {
+      return Left(
+          ServerFailure(errorMessage: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> getTokenDecimal(String contractAddress, String apiUrl) async{
+    try {
+      final EthereumAddress cAddress = EthereumAddress.fromHex(contractAddress);
+      String abiCode = await rootBundle.loadString('assets/files/erc20.abi.json');
+      final contract = DeployedContract(ContractAbi.fromJson(abiCode, 'MetaCoin'), cAddress);
+      final symbolFunction = contract.function('decimals');
+      final tokenDecimal = await Client().web3(apiUrl).call(contract: contract, function: symbolFunction,params: []);
+      print(tokenDecimal);
+      return Right(tokenDecimal[0].toString());
+    }catch (e) {
+      return Left(
+          ServerFailure(errorMessage: e.toString()));
     }
   }
 }

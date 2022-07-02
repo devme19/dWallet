@@ -7,6 +7,16 @@ import '../../../../data/models/coin_model.dart';
 class TokenItemWidget extends StatelessWidget {
   TooltipBehavior? _tooltipBehavior;
 
+  // List<Point> asd = [
+  //   Point(price: 1200,date: 1),
+  //   Point(price: 1250,date: 2),
+  //   Point(price: 800,date: 3),
+  //   Point(price: 900,date: 4),
+  //   Point(price: 5000,date: 5),
+  //   Point(price: 1000,date: 6),
+  //   Point(price: 5000,date: 7),
+  //   Point(price: 2000,date: 8),
+  // ];
   TokenItemWidget({
     Key? key,
     this.coin,
@@ -16,11 +26,12 @@ class TokenItemWidget extends StatelessWidget {
     List<Point> points=[];
     if(historicalData!=null) {
       for (int i = 0; i < historicalData.prices!.length; i++) {
-        print(historicalData.prices![i][0]);
+        // print(historicalData.prices![i][0]);
         points.add(Point(date: i+1, price: historicalData.prices![i][1]));
       }
+      coin!.historicalData!.points.clear();
       coin!.historicalData!.points.addAll(points);
-      print("d");
+      // print("d");
     }
   }
   CoinModel? coin;
@@ -146,7 +157,9 @@ class TokenItemWidget extends StatelessWidget {
                               LineSeries<Point, String>(
                                 width: 0.2,
                                   color: Colors.green,
-                                  dataSource: coin!.historicalData!.points,
+                                  dataSource:
+                                  // asd,
+                                  coin!.historicalData!.points,
                                   xValueMapper: (Point sales, _) => sales.date.toString(),
                                   yValueMapper: (Point sales, _) => sales.price,
                                   // Enable data label
