@@ -17,7 +17,8 @@ enum EtherUnit {
   ///finney, 10^15 wei or 1 mEther
   finney,
 
-  ether
+  ether,
+  custom
 }
 
 /// Utility class to easily convert amounts of Ether into different units of
@@ -30,16 +31,14 @@ class EtherAmount {
     EtherUnit.gwei: BigInt.from(10).pow(9),
     EtherUnit.szabo: BigInt.from(10).pow(12),
     EtherUnit.finney: BigInt.from(10).pow(15),
-    EtherUnit.ether: BigInt.from(10).pow(18)
+    EtherUnit.ether: BigInt.from(10).pow(18),
   };
 
   final BigInt _value;
-
   BigInt get getInWei => _value;
   BigInt get getInEther => getValueInUnitBI(EtherUnit.ether);
 
   const EtherAmount.inWei(this._value);
-
   EtherAmount.zero() : this.inWei(BigInt.zero);
 
   /// Constructs an amount of Ether by a unit and its amount. [amount] can

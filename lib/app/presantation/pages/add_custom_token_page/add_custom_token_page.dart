@@ -7,7 +7,12 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class AddCustomTokenPage extends GetView<WalletController> {
-  AddCustomTokenPage({Key? key}) : super(key: key);
+  AddCustomTokenPage({Key? key}) : super(key: key){
+    controller.contractAddressController.clear();
+    controller.tokenDecimalController.clear();
+    controller.tokenSymbolController.clear();
+    controller.tokenNameController.clear();
+  }
   @override
   Widget build(BuildContext context) {
     return
@@ -182,7 +187,7 @@ class AddCustomTokenPage extends GetView<WalletController> {
                         height: 20,
                       ),
                       Text(
-                        "including fake versions of existing tokens. Learn about skams and security risks.",
+                        "including fake versions of existing tokens. Learn about scams and security risks.",
                         style: TextStyle(fontSize: 13),
                         textAlign: TextAlign.center,
                       ),
@@ -193,11 +198,15 @@ class AddCustomTokenPage extends GetView<WalletController> {
                   children: [
                     Expanded(
                         child: ElevatedButton(
-                            onPressed: () {}, child: const Text("Save"))),
+                            onPressed: () {
+                              controller.getTokenInfoByContractAddress(controller.contractAddressController.text);
+                            }, child: const Text("Add"))),
                   ],
-                )
+                ),
+                const SizedBox(height: 16.0,),
               ],
-            )
+            ),
+
           ],
         ),
       );

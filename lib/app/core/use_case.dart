@@ -15,5 +15,6 @@ class Params {
   final Map<String, dynamic>? body;
   final String? contractAddress;
   final String? apiUrl;
-  Params({this.value, this.title, this.body, this.boolValue,this.id,this.contractAddress,this.apiUrl});
+  final String? assetPlatform;
+  Params({this.value, this.title, this.body, this.boolValue,this.id,this.contractAddress,this.apiUrl,this.assetPlatform});
 }

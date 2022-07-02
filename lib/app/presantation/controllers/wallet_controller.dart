@@ -6,8 +6,11 @@ import 'package:dwallet/app/data/data_sources/remote/client.dart';
 import 'package:dwallet/app/data/models/coin_model.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_balance_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_coins_info_usecase.dart';
+import 'package:dwallet/app/domain/use_cases/home/get_eth_address_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_historical_data_usecase.dart';
+import 'package:dwallet/app/domain/use_cases/home/get_token_balance_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_token_decimal_usecase.dart';
+import 'package:dwallet/app/domain/use_cases/home/get_token_info_by_contract_address_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_token_name_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_token_symbol_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/send_transaction_usecase.dart';
@@ -24,6 +27,7 @@ import 'package:bip39/bip39.dart' as bip39;
 import 'package:get_storage/get_storage.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import '../../domain/use_cases/home/save_eth_address_usecase.dart';
 import '../../web3/src/crypto/formatting.dart';
 import '../../web3/web3dart.dart';
 
@@ -89,108 +93,67 @@ class WalletController extends GetxController{
   onNetworkChange(String net){
     network.value = net;
   }
-  getCoinsInfo() async{
-    totalBalance = 0;
+  getTokenInfoByContractAddress(String contractAddress){
+    String? assetPlatform;
+    switch(network.value){
+      case "Ethereum":
+        assetPlatform = "ethereum";
+        break;
+      case "Polygan":
+        assetPlatform = "polygon-pos";
+        break;
+      case "BNB Smart Chain":
+        assetPlatform = "binance-smart-chain";
+        break;
+      case "Fantom":
+        assetPlatform = "fantom";
+        break;
+    }
     Map<String,dynamic> parameters = {
-      'ids':'matic-network,fantom,ethereum,binancecoin',
+      'contract_addresses':contractAddress,
       'vs_currencies':'usd',
       'include_market_cap':true,
       'include_24hr_vol':true,
       'include_24hr_change':true,
       'include_last_updated_at':true
     };
-    GetCoinInfoUseCase getCoinsInfoUseCase  = Get.find();
-    getCoinsInfoStatus = StateStatus.LOADING;
-    update();
-    getCoinsInfoUseCase.call(Params(body: parameters)).then((response) {
+    GetTokenInfoByContractAddressUseCase getTokenInfoByContractAddress = Get.find();
+    getTokenInfoByContractAddress.call(Params(body: parameters,assetPlatform: assetPlatform!)).then((response) {
       if(response.isRight){
-        getCoinsInfoStatus = StateStatus.SUCCESS;
-        for(CoinModel coin in response.right){
+        getTokenBalance(contractAddress);
 
-          switch (coin.name){
-            case 'ethereum':
-              coin.name = 'Ethereum';
-              coin.network = 'Ethereum';
-              coin.symbol= 'ETH';
-              coin.coingeckoId= 'ethereum';
-              coin.chainId= '4002';
-
-              coin.jrpcApi = [
-                'https://ropsten.infura.io/v3/c8694e395984403b99cdef8e8182da43',
-                'wss://ropsten.infura.io/ws/v3/c8694e395984403b99cdef8e8182da43',
-                'https://rinkeby.infura.io/v3/c8694e395984403b99cdef8e8182da43',
-                'wss://rinkeby.infura.io/ws/v3/c8694e395984403b99cdef8e8182da43',
-
-                ];
-              coin.imageUrl = 'https://assets.coingecko.com/coins/images/279/large/ethereum.png?1595348880';
-              getBalance(coin.jrpcApi![0]).then((balance) {
-                coin.balance = balance;
-                totalBalance += (coin.usd! * coin.balance!);
-                update();
-              });
-              break;
-            case 'binancecoin':
-              coin.name = 'BNB';
-              coin.symbol= 'BNB';
-              coin.coingeckoId= 'binancecoin';
-              coin.chainId= '97';
-              coin.network = 'BNB Smart Chain';
-              coin.jrpcApi = [
-                'https://data-seed-prebsc-1-s2.binance.org:8545',
-                'https://data-seed-prebsc-2-s2.binance.org:8545',
-                'https://data-seed-prebsc-2-s3.binance.org:8545'];
-              coin.imageUrl = 'https://assets.coingecko.com/coins/images/17271/large/icon_200px_16bit.png';
-              getBalance(coin.jrpcApi![0]).then((balance) {
-                coin.balance = balance;
-                print("BNB Price ${coin.usd!}");
-                totalBalance += (coin.usd! * coin.balance!);
-                update();
-              });
-              break;
-            case 'fantom':
-              coin.name = 'Fantom';
-              coin.symbol= 'FTM';
-              coin.network = 'Fantom';
-              coin.coingeckoId= 'fantom';
-              coin.chainId= '4002';
-              coin.jrpcApi = [
-                'https://rpc.testnet.fantom.network'];
-              coin.imageUrl = 'https://assets.coingecko.com/coins/images/4001/large/Fantom.png?1558015016';
-              getBalance(coin.jrpcApi![0]).then((balance) {
-                coin.balance = balance;
-                totalBalance += (coin.usd! * coin.balance!);
-                update();
-              });
-              break;
-            case 'matic-network':
-              coin.name = 'Matic';
-              coin.symbol= 'MATIC';
-              coin.network = 'Polygan';
-              coin.coingeckoId= 'matic-network';
-              coin.chainId= '80001';
-              coin.jrpcApi = [
-                'https://matic-testnet-archive-rpc.bwarelabs.com',
-                'https://rpc-mumbai.maticvigil.com',
-                'https://matic-mumbai.chainstacklabs.com',
-
-                ];
-              coin.imageUrl = 'https://assets.coingecko.com/coins/images/4713/large/matic-token-icon.png';
-              getBalance(coin.jrpcApi![0]).then((balance) {
-                coin.balance = balance;
-                totalBalance += (coin.usd! * coin.balance!);
-                update();
-              });
-              break;
-
-          }
-          getHistoricalData(coin: coin,id: coin.coingeckoId,currency: 'usd',days: 256,interval: 'daily');
-        }
-        coins.clear();
-        coins.addAll(response.right);
       }else if(response.isLeft){
-        getCoinsInfoStatus = StateStatus.ERROR;
+
       }
-      update();
+    });
+  }
+  getTokenBalance(String contractAddress){
+    String? apiUrl;
+    switch(network.value){
+      case "Ethereum":
+        apiUrl = "https://eth-mainnet.nodereal.io/v1/1659dfb40aa24bbb8153a677b98064d7";
+        break;
+      case "Polygan":
+        apiUrl = "https://rpc-mainnet.matic.quiknode.pro";
+        break;
+      case "BNB Smart Chain":
+        apiUrl = "https://binance.nodereal.io";
+        break;
+      case "Fantom":
+        apiUrl = "https://rpcapi.fantom.network";
+        break;
+    }
+
+    GetTokenBalanceUseCase getTokenBalanceUseCase = Get.find();
+    getTokenBalanceUseCase.call(Params(
+      contractAddress: contractAddress,
+      apiUrl: apiUrl
+    )).then((response) {
+      if(response.isRight){
+        Get.snackbar("Result", getValueInUnit(response.right, int.parse(tokenDecimal.value)).toString());
+      }else if(response.isLeft){
+
+      }
     });
   }
   getTokenName(String contractAddress){
@@ -304,6 +267,16 @@ class WalletController extends GetxController{
     shuffledSecretPhraseList.shuffle();
     createPhraseItems(secretPhraseList);
     wallet= await compute(Wallet.fromMnemonic,secretPhrase.value);
+    savePrivateKey();
+    saveEthereumAddress();
+
+  }
+  double getValueInUnit(BigInt value,int decimal) {
+    final factor = BigInt.from(10).pow(decimal);
+    final result = value ~/ factor;
+    final remainder = value.remainder(factor);
+
+    return result.toInt() + (remainder.toInt() / factor.toInt());
   }
   importWallet(String secretPhrase)async{
     try{
@@ -314,6 +287,7 @@ class WalletController extends GetxController{
 
     }
     savePrivateKey();
+    saveEthereumAddress();
   }
    Future<double> getBalance(String url)async{
      GetBalanceUseCase getBalanceUseCase  = Get.find();
@@ -361,6 +335,110 @@ class WalletController extends GetxController{
     }
 
   }
+  getCoinsInfo() async{
+    totalBalance = 0;
+    Map<String,dynamic> parameters = {
+      'ids':'matic-network,fantom,ethereum,binancecoin',
+      'vs_currencies':'usd',
+      'include_market_cap':true,
+      'include_24hr_vol':true,
+      'include_24hr_change':true,
+      'include_last_updated_at':true
+    };
+    GetCoinInfoUseCase getCoinsInfoUseCase  = Get.find();
+    getCoinsInfoStatus = StateStatus.LOADING;
+    update();
+    getCoinsInfoUseCase.call(Params(body: parameters)).then((response) {
+      if(response.isRight){
+        getCoinsInfoStatus = StateStatus.SUCCESS;
+        for(CoinModel coin in response.right){
+
+          switch (coin.name){
+            case 'ethereum':
+              coin.name = 'Ethereum';
+              coin.network = 'Ethereum';
+              coin.symbol= 'ETH';
+              coin.coingeckoId= 'ethereum';
+              coin.chainId= '4002';
+
+              coin.jrpcApi = [
+                'https://ropsten.infura.io/v3/c8694e395984403b99cdef8e8182da43',
+                'wss://ropsten.infura.io/ws/v3/c8694e395984403b99cdef8e8182da43',
+                'https://rinkeby.infura.io/v3/c8694e395984403b99cdef8e8182da43',
+                'wss://rinkeby.infura.io/ws/v3/c8694e395984403b99cdef8e8182da43',
+
+              ];
+              coin.imageUrl = 'https://assets.coingecko.com/coins/images/279/large/ethereum.png?1595348880';
+              getBalance(coin.jrpcApi![0]).then((balance) {
+                coin.balance = balance;
+                totalBalance += (coin.usd! * coin.balance!);
+                update();
+              });
+              break;
+            case 'binancecoin':
+              coin.name = 'BNB';
+              coin.symbol= 'BNB';
+              coin.coingeckoId= 'binancecoin';
+              coin.chainId= '97';
+              coin.network = 'BNB Smart Chain';
+              coin.jrpcApi = [
+                'https://data-seed-prebsc-1-s2.binance.org:8545',
+                'https://data-seed-prebsc-2-s2.binance.org:8545',
+                'https://data-seed-prebsc-2-s3.binance.org:8545'];
+              coin.imageUrl = 'https://assets.coingecko.com/coins/images/17271/large/icon_200px_16bit.png';
+              getBalance(coin.jrpcApi![0]).then((balance) {
+                coin.balance = balance;
+                print("BNB Price ${coin.usd!}");
+                totalBalance += (coin.usd! * coin.balance!);
+                update();
+              });
+              break;
+            case 'fantom':
+              coin.name = 'Fantom';
+              coin.symbol= 'FTM';
+              coin.network = 'Fantom';
+              coin.coingeckoId= 'fantom';
+              coin.chainId= '4002';
+              coin.jrpcApi = [
+                'https://rpc.testnet.fantom.network'];
+              coin.imageUrl = 'https://assets.coingecko.com/coins/images/4001/large/Fantom.png?1558015016';
+              getBalance(coin.jrpcApi![0]).then((balance) {
+                coin.balance = balance;
+                totalBalance += (coin.usd! * coin.balance!);
+                update();
+              });
+              break;
+            case 'matic-network':
+              coin.name = 'Matic';
+              coin.symbol= 'MATIC';
+              coin.network = 'Polygan';
+              coin.coingeckoId= 'matic-network';
+              coin.chainId= '80001';
+              coin.jrpcApi = [
+                'https://matic-testnet-archive-rpc.bwarelabs.com',
+                'https://rpc-mumbai.maticvigil.com',
+                'https://matic-mumbai.chainstacklabs.com',
+
+              ];
+              coin.imageUrl = 'https://assets.coingecko.com/coins/images/4713/large/matic-token-icon.png';
+              getBalance(coin.jrpcApi![0]).then((balance) {
+                coin.balance = balance;
+                totalBalance += (coin.usd! * coin.balance!);
+                update();
+              });
+              break;
+
+          }
+          getHistoricalData(coin: coin,id: coin.coingeckoId,currency: 'usd',days: 256,interval: 'daily');
+        }
+        coins.clear();
+        coins.addAll(response.right);
+      }else if(response.isLeft){
+        getCoinsInfoStatus = StateStatus.ERROR;
+      }
+      update();
+    });
+  }
   List<Widget> createSelectedPhraseItems(var secretPhraseList){
     selectedPhrasesItems.clear();
     List<Widget> widgets=[];
@@ -400,6 +478,27 @@ class WalletController extends GetxController{
 
       }
     });
+  }
+  saveEthereumAddress()async{
+    EthereumAddress ethAddress = await wallet!.privateKey.extractAddress();
+    SaveEthAddressUseCase saveEthAddress = Get.find();
+    saveEthAddress.call(Params(contractAddress: ethAddress.toString())).then((response){
+      if(response.isRight){
+        getPrivateKey();
+      }else if(response.isLeft){
+
+      }
+    });
+  }
+  Future<String> getEthereumAddress()async{
+    GetEthAddressUseCase getEthAddress = Get.find();
+    Either response = await getEthAddress.call(NoParams());
+    if(response.isRight){
+      return response.right;
+    }else if(response.isLeft){
+      return "";
+    }
+    return "";
   }
   getPrivateKey(){
     GetPrivateKeyUseCase getPrivateKeyUseCase = Get.find();

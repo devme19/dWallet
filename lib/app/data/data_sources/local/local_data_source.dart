@@ -18,6 +18,8 @@ abstract class AppLocalDataSource {
 
   bool savePrivateKey(String key);
   String getPrivateKey();
+  bool saveEthereumAddress(String key);
+  String getEthereumAddress();
 }
 
 class AppLocalDateSourceImpl implements AppLocalDataSource {
@@ -28,6 +30,7 @@ class AppLocalDateSourceImpl implements AppLocalDataSource {
   String themeKey = "themeKey";
   String langKey = "langKey";
   String privateKey = "privateKey";
+  String ethKey = "ethKey";
   String defaultCoins = "defaultCoins";
   final _key = Key.fromUtf8('my 32 length key................');
   final _iv = IV.fromLength(16);
@@ -159,6 +162,25 @@ class AppLocalDateSourceImpl implements AppLocalDataSource {
     // encrypted = encrypter!.encrypt(key, iv: _iv);
     try {
       box.write(privateKey, key);
+      return true;
+    } catch (e) {
+      throw CacheException(message: e.toString());
+    }
+  }
+
+  @override
+  String getEthereumAddress() {
+    try {
+      return box.read(ethKey) ?? "";
+    } catch (e) {
+      throw CacheException(message: e.toString());
+    }
+  }
+
+  @override
+  bool saveEthereumAddress(String key) {
+    try {
+      box.write(ethKey, key);
       return true;
     } catch (e) {
       throw CacheException(message: e.toString());

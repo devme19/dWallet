@@ -9,8 +9,10 @@ import 'package:dwallet/app/data/models/coin_historical_data_model.dart';
 import 'package:dwallet/app/data/models/coin_model.dart';
 import 'package:dwallet/app/data/models/verification_model.dart';
 import 'package:dwallet/app/domain/repository/app_repository.dart';
+import 'package:dwallet/app/web3/src/token.dart';
 import 'package:flutter/services.dart';
 
+import '../../web3/src/crypto/formatting.dart';
 import '../../web3/web3dart.dart';
 
 class AppRepositoryImpl implements AppRepository {
@@ -188,6 +190,7 @@ class AppRepositoryImpl implements AppRepository {
   Future<Either<Failure, String>> getTokenName(String contractAddress,String apiUrl) async{
     try {
       final EthereumAddress cAddress = EthereumAddress.fromHex(contractAddress);
+      print(contractAddress.length);
       String abiCode = await rootBundle.loadString('assets/files/erc20.abi.json');
       final contract = DeployedContract(ContractAbi.fromJson(abiCode, 'MetaCoin'), cAddress);
       final nameFunction = contract.function('name');
@@ -229,6 +232,68 @@ class AppRepositoryImpl implements AppRepository {
     }catch (e) {
       return Left(
           ServerFailure(errorMessage: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, CoinModel>> getTokenInfoByContractAddress(Map<String,dynamic> parameters, String assetPlatform) async{
+    try {
+      Response response = await remoteDataSource!.get(url: "simple/token_price/$assetPlatform", queryParameters: parameters);
+      CoinModel coinModel = CoinModel();
+      Map<String,dynamic> data = response.data;
+      for (var key in data.keys) {
+        coinModel = CoinModel.fromJson2(response.data[key]);
+        coinModel.name = key;
+        //print("array_key" + key);
+      }
+
+      return Right(coinModel);
+    } on ServerException catch (e) {
+      return Left(
+          ServerFailure(errorCode: e.errorCode, errorMessage: e.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, BigInt>> getTokenBalance(String contractAddress, String apiUrl) async{
+    try {
+      Either response = await getEthAddress();
+      if(response.isRight){
+      }else if(response.isLeft){
+
+      }
+      final EthereumAddress ethAddress = EthereumAddress.fromHex(response.right);
+      String abiCode = await rootBundle.loadString('assets/files/erc20.abi.json');
+      // Token token = Token(address: cAddress,client: Client().web3(apiUrl));
+      // final sq = await token.getBalance(cAddress);
+      final contract = DeployedContract(ContractAbi.fromJson(abiCode, 'MetaCoin'), EthereumAddress.fromHex(contractAddress));
+      final balanceFunction = contract.function('balanceOf');
+      final balance = await Client().web3(apiUrl).call(contract: contract, function: balanceFunction,params: [
+        ethAddress
+      ]);
+      return Right(balance[0]);
+    }catch (e) {
+      return Left(
+          ServerFailure(errorMessage: e.toString()));
+    }
+  }
+  @override
+  Future<Either<Failure, String>> getEthAddress() async{
+    try {
+      String response = localDataSource!.getEthereumAddress();
+      return Right(response);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> saveEthAddress(String address) async{
+    try {
+      bool response = localDataSource!.saveEthereumAddress(address);
+      return Right(response);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.toString()));
     }
   }
 }

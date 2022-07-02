@@ -18,6 +18,9 @@ abstract class AppRepository {
   Future<Either<Failure, bool>> savePrivateKey(String key);
   Future<Either<Failure, String>> getPrivateKey();
   /////////////////////  Tokens ///////////////////////////
+  Future<Either<Failure, bool>> saveEthAddress(String address);
+  Future<Either<Failure, String>> getEthAddress();
+
   Future<Either<Failure, List<CoinModel>>> getTokenInfo(Map<String,dynamic> parameters);
   Future<Either<Failure, double>> getBalance(String apiUrl);
   Future<Either<Failure, String>> sendTransaction(Map<String,dynamic> body);
@@ -25,4 +28,6 @@ abstract class AppRepository {
   Future<Either<Failure, String>> getTokenName(String contractAddress,String apiUrl);
   Future<Either<Failure, String>> getTokenSymbol(String contractAddress,String apiUrl);
   Future<Either<Failure, String>> getTokenDecimal(String contractAddress,String apiUrl);
+  Future<Either<Failure, BigInt>> getTokenBalance(String contractAddress,String apiUrl);
+  Future<Either<Failure, CoinModel>> getTokenInfoByContractAddress(Map<String,dynamic> parameters,String assetPlatform);
 }
