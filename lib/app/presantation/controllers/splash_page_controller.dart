@@ -1,5 +1,6 @@
 import 'package:dwallet/app/core/use_case.dart';
 import 'package:dwallet/app/domain/use_cases/private_key/get_private_key_usecase.dart';
+import 'package:dwallet/app/presantation/controllers/wallet_controller.dart';
 import 'package:dwallet/app/presantation/routes/app_routes.dart';
 import 'package:get/get.dart';
 

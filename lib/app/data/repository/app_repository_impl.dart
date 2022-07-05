@@ -7,6 +7,7 @@ import 'package:dwallet/app/data/data_sources/remote/client.dart';
 import 'package:dwallet/app/data/data_sources/remote/remote_data_source.dart';
 import 'package:dwallet/app/data/models/coin_historical_data_model.dart';
 import 'package:dwallet/app/data/models/coin_model.dart';
+import 'package:dwallet/app/data/models/token_model.dart';
 import 'package:dwallet/app/data/models/verification_model.dart';
 import 'package:dwallet/app/domain/repository/app_repository.dart';
 import 'package:dwallet/app/web3/src/token.dart';
@@ -236,18 +237,14 @@ class AppRepositoryImpl implements AppRepository {
   }
 
   @override
-  Future<Either<Failure, CoinModel>> getTokenInfoByContractAddress(Map<String,dynamic> parameters, String assetPlatform) async{
+  Future<Either<Failure, TokenModel>> getTokenInfoByContractAddress(String contractAddress, String assetPlatform) async{
     try {
-      Response response = await remoteDataSource!.get(url: "simple/token_price/$assetPlatform", queryParameters: parameters);
-      CoinModel coinModel = CoinModel();
+      Response response = await remoteDataSource!.get(url: "coins/$assetPlatform/contract/$contractAddress",queryParameters:{});
+      TokenModel tokenModel = TokenModel.fromJson(response.data);
       Map<String,dynamic> data = response.data;
-      for (var key in data.keys) {
-        coinModel = CoinModel.fromJson2(response.data[key]);
-        coinModel.name = key;
-        //print("array_key" + key);
-      }
 
-      return Right(coinModel);
+
+      return Right(tokenModel);
     } on ServerException catch (e) {
       return Left(
           ServerFailure(errorCode: e.errorCode, errorMessage: e.errorMessage));
@@ -291,6 +288,26 @@ class AppRepositoryImpl implements AppRepository {
   Future<Either<Failure, bool>> saveEthAddress(String address) async{
     try {
       bool response = localDataSource!.saveEthereumAddress(address);
+      return Right(response);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<CoinModel>>> getCoinsFromLocal()async {
+    try {
+      var response = localDataSource!.getCoins();
+      return Right(response);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> saveCoinsToLocal(String coins) async{
+    try {
+      var response = localDataSource!.saveCoins(coins);
       return Right(response);
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.toString()));

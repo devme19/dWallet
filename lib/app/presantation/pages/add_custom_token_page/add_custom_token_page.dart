@@ -7,12 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class AddCustomTokenPage extends GetView<WalletController> {
-  AddCustomTokenPage({Key? key}) : super(key: key){
-    controller.contractAddressController.clear();
-    controller.tokenDecimalController.clear();
-    controller.tokenSymbolController.clear();
-    controller.tokenNameController.clear();
-  }
+  AddCustomTokenPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return
@@ -74,7 +69,7 @@ class AddCustomTokenPage extends GetView<WalletController> {
                         isScrollControlled: true,
                         context: Get.context!,
                         builder: (context) {
-                          return ChooseNetworkPage(networks: controller.coins,selectedNetwork: controller.onNetworkChange,network: controller.network.value,);
+                          return ChooseNetworkPage(networks: controller.networks,selectedNetwork: controller.onNetworkChange,network: controller.selectedNetwork,);
                         });
                   },
                   child: Container(
@@ -92,13 +87,16 @@ class AddCustomTokenPage extends GetView<WalletController> {
                         ),
                         Row(
                           children: [
-                            Obx(()=>Text(
-                              controller.network.value,
-                              style: TextStyle(
-                                  color:
-                                  IColor().DARK_TEXT_COLOR.withOpacity(0.5),
-                                  fontSize: 18),
-                            ),),
+
+                            GetBuilder<WalletController>(builder: (walletController){
+                              return Text(
+                                walletController.selectedNetwork!.name!,
+                                style: TextStyle(
+                                    color:
+                                    IColor().DARK_TEXT_COLOR.withOpacity(0.5),
+                                    fontSize: 18),
+                              );
+                            }),
                             Icon(
                               Icons.arrow_forward,
                               color: IColor().DARK_TEXT_COLOR.withOpacity(0.5),
@@ -200,6 +198,8 @@ class AddCustomTokenPage extends GetView<WalletController> {
                         child: ElevatedButton(
                             onPressed: () {
                               controller.getTokenInfoByContractAddress(controller.contractAddressController.text);
+
+                              Get.back();
                             }, child: const Text("Add"))),
                   ],
                 ),

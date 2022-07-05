@@ -9,7 +9,7 @@ import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:path/path.dart';
 class HomePage extends GetView<WalletController> {
   HomePage({Key? key}) : super(key: key){
-    controller.getCoinsInfo();
+    controller.loadCoins();
   }
   double top =0.0;
   bool visibility = true;
@@ -33,7 +33,7 @@ class HomePage extends GetView<WalletController> {
   }
 
   Future<void> onRefresh()async=>
-    controller.getCoinsInfo();
+    controller.loadCoins();
   Widget body(){
     return GetBuilder<WalletController>(builder: (controller){
       return

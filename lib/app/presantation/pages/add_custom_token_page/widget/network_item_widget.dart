@@ -1,16 +1,17 @@
 import 'package:dwallet/app/data/models/coin_model.dart';
+import 'package:dwallet/app/data/models/network_model.dart';
 import 'package:dwallet/app/presantation/theme/themes.dart';
 import 'package:flutter/material.dart';
 class NetworkItemWidget extends StatelessWidget {
   NetworkItemWidget({
     Key? key,
-    this.coin,
+    this.network,
     this.selectedNetwork,
-    this.network
+    this.networkStr
   }) : super(key: key);
-  CoinModel? coin;
-  ValueChanged<String>? selectedNetwork;
-  String? network;
+  NetworkModel? network;
+  ValueChanged<NetworkModel>? selectedNetwork;
+  String? networkStr;
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +19,7 @@ class NetworkItemWidget extends StatelessWidget {
     return
       InkWell(
         onTap: (){
-          coin!.isSelected= !coin!.isSelected;
-          selectedNetwork!(coin!.network!);
+          selectedNetwork!(network!);
         },
         child: Container(
           margin: const EdgeInsets.symmetric(vertical: 5),
@@ -36,19 +36,19 @@ class NetworkItemWidget extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      margin: EdgeInsets.symmetric(horizontal: 20),
+                      margin: const EdgeInsets.symmetric(horizontal: 20),
                       alignment: Alignment.center,
                       height: 40,
                       width: 40,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
-                          color: Color(0xffF7931A)),
-                      child: Image.network(coin!.imageUrl!),
+                          color: const Color(0xffF7931A)),
+                      child: Image.network(network!.imageUrl!),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 6),
                       child: Text(
-                        coin!.network!,
+                        network!.name!,
                         style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.w500),
                       ),
@@ -58,17 +58,17 @@ class NetworkItemWidget extends StatelessWidget {
                 Transform.scale(
                   scale: 1.8,
                   child: Checkbox(
-                      side: BorderSide(
+                      side: const BorderSide(
                           width: 0.5,
                           color: Colors.transparent),
                       tristate: false,
                       activeColor: IColor().Dark_CHECK_COLOR.withOpacity(0.1),
                       checkColor: IColor().Dark_CHECK_COLOR,
                       splashRadius: 10,
-                      value: network == coin!.network!,
+                      value: networkStr == network!.name!,
                       onChanged: (value) {
-                        coin!.isSelected= !coin!.isSelected;
-                        selectedNetwork!(coin!.network!);
+                        network!.isSelected= !network!.isSelected;
+                        selectedNetwork!(network!);
                       }),
                 ),
                 // Switch(

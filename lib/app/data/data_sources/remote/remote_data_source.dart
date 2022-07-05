@@ -46,8 +46,8 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
             errorCode: 101, errorMessage: "خطا در برقراری ارتباط");
       } else {
         throw ServerException(
-            errorCode: e.response!.statusCode,
-            errorMessage: e.response!.statusMessage);
+            errorCode: 0,
+            errorMessage: e.toString());
       }
     }
   }

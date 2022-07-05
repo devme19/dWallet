@@ -104,9 +104,10 @@ class VerifySecretPhrasePage extends GetView<WalletController> {
                   children: [
                     Expanded(
                         child: ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async{
                               if(controller.verifySecretPhrase()){
                                 controller.savePrivateKey();
+                                await controller.getDefaultCoinsInfo();
                                 Get.offAllNamed(AppRoutes.homePage);
                               }
                             }, child: const Text("Continue"))),

@@ -11,20 +11,20 @@ class CoinModel {
   String? imageUrl;
   double? balance=0;
   CoinHistoricalDataModel? historicalData;
-  String? network;
+  String? contractAddress;
 
-  bool isSelected = false;
-
-  double? usd;
+  double? usd = 0.0;
   double? usdMarketCap;
   double? usd24hVol;
   double? usd24hChange;
   int? lastUpdatedAt;
 
   CoinModel(
-      {this.name,
+      {
+        this.name,
         this.symbol,
         this.coingeckoId,
+        this.contractAddress,
         this.chainId,
         this.jrpcApi,
         this.imageUrl,
@@ -32,7 +32,8 @@ class CoinModel {
         this.usdMarketCap,
         this.usd24hVol,
         this.usd24hChange,
-        this.lastUpdatedAt
+        this.lastUpdatedAt,
+
       });
   CoinModel.fromJson2(Map<String, dynamic> json) {
     usd = json['usd'];
@@ -46,23 +47,30 @@ class CoinModel {
     symbol = json['symbol'];
     coingeckoId = json['coingeckoId'];
     chainId = json['chainId'];
-    jrpcApi = jsonEncode(json['jrpcApi']) as List<String>?;
+    jrpcApi = json['jrpcApi'].cast<String>();
     imageUrl = json['imageUrl'];
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {};
-    data['name'] = name;
-    data['symbol'] = symbol;
-    data['coingeckoId'] = coingeckoId;
-    data['chainId'] = chainId;
-    data['jrpcApi'] = jrpcApi!.cast<String>();
-    data['imageUrl'] = imageUrl;
-    data['usd'] = usd;
-    data['usd_market_cap'] = usdMarketCap;
-    data['usd_24h_vol'] = usd24hVol;
-    data['usd_24h_change'] = usd24hChange;
-    data['last_updated_at'] = lastUpdatedAt;
-    return data;
-  }
+  static Map<String, dynamic> toMap(CoinModel coin) =>{
+    'name' : coin.name,
+    'symbol' : coin.symbol,
+    'coingeckoId' : coin.coingeckoId,
+    'chainId' : coin.chainId,
+    'jrpcApi' : coin.jrpcApi!.cast<String>(),
+    'imageUrl' : coin.imageUrl,
+    'usd' : coin.usd,
+    'usd_market_cap' : coin.usdMarketCap,
+    'usd_24h_vol' : coin.usd24hVol,
+    'usd_24h_change' : coin.usd24hChange,
+    'last_updated_at' : coin.lastUpdatedAt,
+  };
+  static String encode(List<CoinModel> coins) => json.encode(
+    coins
+        .map<Map<String, dynamic>>((coin) => CoinModel.toMap(coin))
+        .toList(),
+  );
+  static List<CoinModel> decode(String coins) =>
+      (json.decode(coins) as List<dynamic>)
+          .map<CoinModel>((item) => CoinModel.fromJson(item))
+          .toList();
 }

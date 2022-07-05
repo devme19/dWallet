@@ -2,6 +2,7 @@ import 'package:dwallet/app/core/either.dart';
 import 'package:dwallet/app/core/failures.dart';
 import 'package:dwallet/app/data/models/coin_historical_data_model.dart';
 import 'package:dwallet/app/data/models/coin_model.dart';
+import 'package:dwallet/app/data/models/token_model.dart';
 import 'package:dwallet/app/data/models/verification_model.dart';
 
 abstract class AppRepository {
@@ -29,5 +30,7 @@ abstract class AppRepository {
   Future<Either<Failure, String>> getTokenSymbol(String contractAddress,String apiUrl);
   Future<Either<Failure, String>> getTokenDecimal(String contractAddress,String apiUrl);
   Future<Either<Failure, BigInt>> getTokenBalance(String contractAddress,String apiUrl);
-  Future<Either<Failure, CoinModel>> getTokenInfoByContractAddress(Map<String,dynamic> parameters,String assetPlatform);
+  Future<Either<Failure, TokenModel>> getTokenInfoByContractAddress(String contractAddress,String assetPlatform);
+  Future<Either<Failure, List<CoinModel>>> getCoinsFromLocal();
+  Future<Either<Failure, bool>> saveCoinsToLocal(String coins);
 }
