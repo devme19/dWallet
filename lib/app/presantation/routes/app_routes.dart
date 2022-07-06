@@ -1,6 +1,7 @@
 import 'package:dwallet/app/presantation/bindings/main_binding.dart';
 import 'package:dwallet/app/presantation/bindings/splash_page_binding.dart';
 import 'package:dwallet/app/presantation/pages/agreement_page/agreement_page.dart';
+import 'package:dwallet/app/presantation/pages/coin_page/coin_page.dart';
 import 'package:dwallet/app/presantation/pages/home_page/home_page.dart';
 import 'package:dwallet/app/presantation/pages/import_wallet_page/import_wallet_page.dart';
 import 'package:dwallet/app/presantation/pages/intro_page/intro_page.dart';
@@ -22,6 +23,7 @@ class AppRoutes {
   static const String agreementPage = "/agreementPage";
   static const String verifySecretPhrasePage = "/verifySecretPhrasePage";
   static const String importWalletPage = "/importWalletPage";
+  static const String coinPage = "/coinPage";
 }
 
 class App {
@@ -42,6 +44,10 @@ class App {
     GetPage(
       name: AppRoutes.importWalletPage,
       page: () => const ImportWalletPage(),
+    ),
+    GetPage(
+      name: AppRoutes.coinPage,
+      page: () =>  CoinPage(),
     ),
     GetPage(
         name: AppRoutes.settingPage,

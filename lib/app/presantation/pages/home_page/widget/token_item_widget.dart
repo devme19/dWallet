@@ -53,7 +53,7 @@ class TokenItemWidget extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20),
                           // color: const Color(0xffF7931A)
                         ),
-                        child:coin!.imageUrl!.isEmpty?Image.asset('assets/images/crypto.png'): Image.network(coin!.imageUrl!),
+                        child:coin!.imageUrl!.isEmpty?Image.asset('assets/images/crypto.png',color: Colors.white38,): Image.network(coin!.imageUrl!),
                       ),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,

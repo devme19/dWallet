@@ -21,6 +21,7 @@ import 'package:dwallet/app/domain/use_cases/home/save_coin_to_local_usecase.dar
 import 'package:dwallet/app/domain/use_cases/home/send_transaction_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/private_key/get_private_key_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/private_key/save_private_key_usecase.dart';
+import 'package:dwallet/app/presantation/pages/global_widgets/success_dialog.dart';
 import 'package:dwallet/app/presantation/pages/secret_phrase_page/widget/secret_phrase_item_widget.dart';
 import 'package:dwallet/app/presantation/routes/app_routes.dart';
 import 'package:dwallet/app/presantation/utils/state_status.dart';
@@ -52,6 +53,7 @@ class WalletController extends GetxController{
   StateStatus getCoinsInfoStatus = StateStatus.INITIAL;
   double totalBalance = 0.0;
   List<CoinModel> coins=[];
+  List<CoinModel> filteredCoins=[];
   RxString tokenName = "".obs;
   RxString tokenSymbol = "".obs;
   RxString tokenDecimal = "".obs;
@@ -68,7 +70,19 @@ class WalletController extends GetxController{
     super.onInit();
     createNetworksList();
   }
-
+  searchCoin(String searchTerm) {
+    filteredCoins =coins
+        .where(
+            (element) =>
+            element.name!.toLowerCase().contains(searchTerm))
+        .toList();
+    update();
+  }
+  clearSearch(){
+    invisibleSearchBar();
+    filteredCoins = coins;
+    update();
+  }
   createNetworksList(){
     networks.clear();
     networks.add(NetworkModel(name: "Ethereum",apiUrls: [
@@ -160,6 +174,7 @@ class WalletController extends GetxController{
       if(response.isRight){
         coins.clear();
         coins.addAll(response.right);
+        filteredCoins.addAll(coins);
         String ids ='';
         for(CoinModel coin in coins){
           ids += '${coin.coingeckoId!},';
@@ -305,6 +320,7 @@ class WalletController extends GetxController{
       await getDefaultCoinsInfo();
       saveCoins();
       Get.offAllNamed(AppRoutes.homePage);
+      Get.dialog(SuccessDialog(dialogAlert: 'Your wallet was successfully imported.',onDone: (value)=>Get.back(),));
     }catch (e) {
       print("error");
 

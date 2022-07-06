@@ -1,5 +1,6 @@
 import 'package:dwallet/app/presantation/pages/global_widgets/app_bar_widget.dart';
 import 'package:dwallet/app/presantation/pages/global_widgets/bg_widget.dart';
+import 'package:dwallet/app/presantation/pages/global_widgets/success_dialog.dart';
 import 'package:dwallet/app/presantation/routes/app_routes.dart';
 import 'package:dwallet/app/presantation/theme/themes.dart';
 import 'package:dwallet/app/presantation/utils/globals.dart';
@@ -109,6 +110,7 @@ class VerifySecretPhrasePage extends GetView<WalletController> {
                                 controller.savePrivateKey();
                                 await controller.getDefaultCoinsInfo();
                                 Get.offAllNamed(AppRoutes.homePage);
+                                Get.dialog(SuccessDialog(dialogAlert: 'Your wallet was successfully created.',onDone: (value)=>Get.back(),));
                               }
                             }, child: const Text("Continue"))),
                   ],

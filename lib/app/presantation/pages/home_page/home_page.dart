@@ -1,7 +1,13 @@
+import 'package:dwallet/app/data/models/coin_model.dart';
 import 'package:dwallet/app/presantation/controllers/wallet_controller.dart';
 import 'package:dwallet/app/presantation/pages/add_custom_token_page/add_custom_token_page.dart';
+import 'package:dwallet/app/presantation/pages/coin_page/coin_page.dart';
 import 'package:dwallet/app/presantation/pages/global_widgets/bg_widget.dart';
+import 'package:dwallet/app/presantation/pages/global_widgets/search_coin_widget.dart';
+import 'package:dwallet/app/presantation/pages/global_widgets/success_dialog.dart';
 import 'package:dwallet/app/presantation/pages/home_page/widget/token_item_widget.dart';
+import 'package:dwallet/app/presantation/pages/send_page/send_page.dart';
+import 'package:dwallet/app/presantation/routes/app_routes.dart';
 import 'package:dwallet/app/presantation/theme/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,6 +17,7 @@ class HomePage extends GetView<WalletController> {
   HomePage({Key? key}) : super(key: key){
     controller.loadCoins();
   }
+  TextEditingController searchController= TextEditingController();
   double top =0.0;
   bool visibility = true;
   @override
@@ -96,6 +103,7 @@ class HomePage extends GetView<WalletController> {
                                         InkWell(
                                           onTap: () {
                                             print("Receive");
+
                                           },
                                           child: Container(
                                             width: 60,
@@ -127,31 +135,17 @@ class HomePage extends GetView<WalletController> {
                                       children: [
                                         InkWell(
                                           onTap: () {
-                                            print("Send");
-                                            showModalBottomSheet<void>(
-                                                context: context,
-                                                isScrollControlled: true,
-                                                backgroundColor: Colors.transparent,
-                                                builder: (BuildContext context) {
-                                                  return Container(
-                                                    margin: const EdgeInsets.only(top:100.0),
-                                                    // height: Get.height,
-                                                    color: Colors.amber,
-                                                    child: Center(
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        mainAxisSize: MainAxisSize.min,
-                                                        children: <Widget>[
-                                                          const Text('Modal BottomSheet'),
-                                                          ElevatedButton(
-                                                            child: const Text('Close BottomSheet'),
-                                                            onPressed: () => Navigator.pop(context),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  );
-                                                });
+                                            // controller.sendTransaction(apiUrl: '',amount: 0.002,receiveAddress: );
+                                            // showModalBottomSheet<void>(
+                                            //     context: context,
+                                            //     isScrollControlled: true,
+                                            //     backgroundColor: Colors.transparent,
+                                            //     builder: (BuildContext context) {
+                                            //       return SearchCoinWidget(title: 'Send',);
+                                            //     });
+                                            Get.bottomSheet(
+                                              isScrollControlled: true,
+                                                SearchCoinWidget(title: 'Send',selectedCoin: onCoinSelected,));
                                           },
                                           child: Container(
                                             width: 60,
@@ -270,9 +264,11 @@ class HomePage extends GetView<WalletController> {
                           ),
                           Expanded(
                               child: TextField(
+                                controller: searchController,
                                 onSubmitted: (value) {
                                   controller.invisibleSearchBar();
                                 },
+                                onChanged: controller.searchCoin,
                                 autofocus: true,
                                 textAlignVertical: TextAlignVertical.bottom,
                                 cursorColor: Colors.white,
@@ -295,16 +291,34 @@ class HomePage extends GetView<WalletController> {
               delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
                   return
-                    TokenItemWidget(
-                    coin: walletController.coins[index],
-                  );
+                    InkWell(
+                      onTap: ()
+                      {
+                        Get.bottomSheet(
+                          isScrollControlled: true,
+                            CoinPage(
+                          coin: walletController.filteredCoins[index],));
+                      controller.clearSearch();
+                      searchController.clear();
+                    },
+                      child: TokenItemWidget(
+                      coin: walletController.filteredCoins[index],
+                  ),
+                    );
                 },
-                childCount: walletController.coins.length,
+                childCount: walletController.filteredCoins.length,
               ),
             );
           })
         ],
       );
     });
+  }
+
+  onCoinSelected(CoinModel coin){
+    Get.back();
+    Get.bottomSheet(
+        isScrollControlled: true,
+        SendPage(coin: coin,));
   }
 }

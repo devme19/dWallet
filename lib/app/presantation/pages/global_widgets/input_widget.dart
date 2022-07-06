@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 class InputWidget extends StatelessWidget {
   TextEditingController? controller;
   ValueChanged<String>? onSubmit;
-  InputWidget({Key? key, required this.hint,this.controller,this.onSubmit}) : super(key: key);
+  ValueChanged<String>? onChange;
+  InputWidget({Key? key, required this.hint,this.controller,this.onSubmit,this.onChange}) : super(key: key);
   String? hint;
 
   @override
@@ -18,6 +19,7 @@ class InputWidget extends StatelessWidget {
       child: TextField(
         onSubmitted: (value)=>onSubmit!(value),
         controller:controller,
+        onChanged: onChange,
         decoration: InputDecoration(
             fillColor: Colors.transparent,
             hintText: hint,
