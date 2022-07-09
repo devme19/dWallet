@@ -109,6 +109,7 @@ class VerifySecretPhrasePage extends GetView<WalletController> {
                               if(controller.verifySecretPhrase()){
                                 controller.savePrivateKey();
                                 await controller.getDefaultCoinsInfo();
+                                controller.saveCoins();
                                 Get.offAllNamed(AppRoutes.homePage);
                                 Get.dialog(SuccessDialog(dialogAlert: 'Your wallet was successfully created.',onDone: (value)=>Get.back(),));
                               }
