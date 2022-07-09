@@ -190,7 +190,7 @@ class HomePage extends GetView<WalletController> {
           SliverToBoxAdapter(
               child:
               Container(
-                padding: const EdgeInsets.only(bottom: 20.0,right: 16.0,left: 16.0),
+                padding: const EdgeInsets.only(bottom: 20.0,right: 8.0,left: 8.0),
                 // margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
                     color: IColor().DARK_HOME_LIST_BG_COLOR,

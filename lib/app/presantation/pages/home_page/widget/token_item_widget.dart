@@ -32,7 +32,7 @@ class TokenItemWidget extends StatelessWidget {
         height: 160,
         child:
         Container(
-          margin: const EdgeInsets.symmetric(vertical: 8.0,horizontal: 16.0),
+          margin: const EdgeInsets.symmetric(vertical: 8.0,horizontal: 20.0),
           padding: EdgeInsets.all(8.0),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
