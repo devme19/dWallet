@@ -303,6 +303,10 @@ class WalletController extends GetxController{
     wallet= await compute(Wallet.fromMnemonic,secretPhrase.value);
     savePrivateKey();
     saveEthereumAddress();
+    await getDefaultCoinsInfo();
+    saveCoins();
+    Get.offAllNamed(AppRoutes.homePage);
+    Get.dialog(SuccessDialog(dialogAlert: 'Your wallet was successfully created.',onDone: (value)=>Get.back(),));
 
   }
   double getValueInUnit(BigInt value,int decimal) {

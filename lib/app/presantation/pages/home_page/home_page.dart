@@ -286,33 +286,30 @@ class HomePage extends GetView<WalletController> {
                   ),
                 ],),
               )),
-          SliverPadding(
-            padding: EdgeInsets.symmetric(horizontal: 20.0),
-            sliver: GetBuilder<WalletController>(builder: (walletController){
-              return SliverList(
-                delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
-                    return
-                      InkWell(
-                        onTap: ()
-                        {
-                          Get.bottomSheet(
+          GetBuilder<WalletController>(builder: (walletController){
+            return SliverList(
+              delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                  return
+                    InkWell(
+                      onTap: ()
+                      {
+                        Get.bottomSheet(
                             isScrollControlled: true,
-                              CoinPage(
-                            coin: walletController.filteredCoins[index],));
+                            CoinPage(
+                              coin: walletController.filteredCoins[index],));
                         controller.clearSearch();
                         searchController.clear();
                       },
-                        child: TokenItemWidget(
+                      child: TokenItemWidget(
                         coin: walletController.filteredCoins[index],
-                    ),
-                      );
-                  },
-                  childCount: walletController.filteredCoins.length,
-                ),
-              );
-            }),
-          )
+                      ),
+                    );
+                },
+                childCount: walletController.filteredCoins.length,
+              ),
+            );
+          })
         ],
       );
     });
