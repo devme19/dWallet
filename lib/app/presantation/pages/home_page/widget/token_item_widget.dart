@@ -31,7 +31,7 @@ class TokenItemWidget extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: IColor().DARK_BG_COLOR),
+            color: IColor().DARK_HOME_LIST_COLOR),
         height: 160,
         child:
         Column(children: [

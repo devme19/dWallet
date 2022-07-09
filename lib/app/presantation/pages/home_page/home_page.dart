@@ -190,10 +190,10 @@ class HomePage extends GetView<WalletController> {
           SliverToBoxAdapter(
               child:
               Container(
-                padding: const EdgeInsets.only(bottom: 20.0),
-                margin: const EdgeInsets.only(bottom: 6),
+                padding: const EdgeInsets.only(bottom: 20.0,right: 16.0,left: 16.0),
+                // margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
-                    color: IColor().DARK_BG_COLOR,
+                    color: IColor().DARK_HOME_LIST_BG_COLOR,
                     borderRadius: const BorderRadius.only(
                       topRight: Radius.circular(30),
                       topLeft: Radius.circular(30),
@@ -286,30 +286,33 @@ class HomePage extends GetView<WalletController> {
                   ),
                 ],),
               )),
-          GetBuilder<WalletController>(builder: (walletController){
-            return SliverList(
-              delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                  return
-                    InkWell(
-                      onTap: ()
-                      {
-                        Get.bottomSheet(
-                          isScrollControlled: true,
-                            CoinPage(
-                          coin: walletController.filteredCoins[index],));
-                      controller.clearSearch();
-                      searchController.clear();
-                    },
-                      child: TokenItemWidget(
-                      coin: walletController.filteredCoins[index],
-                  ),
-                    );
-                },
-                childCount: walletController.filteredCoins.length,
-              ),
-            );
-          })
+          SliverPadding(
+            padding: EdgeInsets.symmetric(horizontal: 20.0),
+            sliver: GetBuilder<WalletController>(builder: (walletController){
+              return SliverList(
+                delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                    return
+                      InkWell(
+                        onTap: ()
+                        {
+                          Get.bottomSheet(
+                            isScrollControlled: true,
+                              CoinPage(
+                            coin: walletController.filteredCoins[index],));
+                        controller.clearSearch();
+                        searchController.clear();
+                      },
+                        child: TokenItemWidget(
+                        coin: walletController.filteredCoins[index],
+                    ),
+                      );
+                  },
+                  childCount: walletController.filteredCoins.length,
+                ),
+              );
+            }),
+          )
         ],
       );
     });
