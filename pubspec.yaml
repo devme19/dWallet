@@ -44,6 +44,7 @@ dependencies:
   syncfusion_flutter_charts: ^20.1.61
   searchable_listview: ^1.6.0
   quantity: ^2.0.0
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

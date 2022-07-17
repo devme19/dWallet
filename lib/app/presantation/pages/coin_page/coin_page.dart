@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:dwallet/app/data/models/coin_model.dart';
 import 'package:dwallet/app/data/models/transaction_model.dart';
 import 'package:dwallet/app/presantation/controllers/wallet_controller.dart';
+import 'package:dwallet/app/presantation/pages/coin_info_page/coin_info_page.dart';
 import 'package:dwallet/app/presantation/pages/send_page/send_page.dart';
 import 'package:dwallet/app/presantation/theme/themes.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,8 @@ class CoinPage extends GetView<WalletController> {
     final size = MediaQuery.of(context).size;
     return
       SingleChildScrollView(
-        child: Container(
+        child:
+        Container(
           padding: EdgeInsets.symmetric(horizontal: size.width * 0.033),
           height: size.height * 0.9,
           decoration: BoxDecoration(
@@ -90,7 +92,11 @@ class CoinPage extends GetView<WalletController> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Get.bottomSheet(
+                                isScrollControlled: true,
+                                CoinInfoPage(coin: coin!,));
+                          },
                           icon: Image.asset("assets/images/icons/info.png"),
                         ),
                       ],

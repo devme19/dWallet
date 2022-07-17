@@ -12,6 +12,7 @@ import 'package:dwallet/app/domain/use_cases/home/get_historical_data_usecase.da
 import 'package:dwallet/app/domain/use_cases/home/get_token_balance_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_token_decimal_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_token_info_by_contract_address_usecase.dart';
+import 'package:dwallet/app/domain/use_cases/home/get_token_market_info.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_token_name_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_token_symbol_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/save_coin_to_local_usecase.dart';
@@ -181,7 +182,22 @@ class WalletController extends GetxController{
       }
     });
   }
+  getTokenMarketInfo(String id){
+    GetTokenMarketInfoUseCase getTokenMarketInfo = Get.find();
+    Map<String,dynamic> parameters={
+      'market_data':true,
+      'community_data':false,
+      'developer_data':false,
+      'sparkline':false
+    };
+    getTokenMarketInfo.call(Params(body: parameters)).then((response){
+      if(response.isRight){
 
+      }else if(response.isLeft){
+
+      }
+    });
+  }
   getTokenInfoByContractAddress(String contractAddress){
     GetTokenInfoByContractAddressUseCase getTokenInfoByContractAddress = Get.find();
     getTokenInfoByContractAddress.call(Params(contractAddress: contractAddress,assetPlatform: selectedNetwork!.assetPlatform)).then((response) {

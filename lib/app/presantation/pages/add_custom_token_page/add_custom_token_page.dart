@@ -72,7 +72,8 @@ class AddCustomTokenPage extends GetView<WalletController> {
                           return ChooseNetworkPage(networks: controller.networks,selectedNetwork: controller.onNetworkChange,network: controller.selectedNetwork,);
                         });
                   },
-                  child: Container(
+                  child:
+                  Container(
                     padding: const EdgeInsets.all(15),
                     margin: const EdgeInsets.only(bottom: 8),
                     decoration: BoxDecoration(

@@ -8,6 +8,7 @@ import 'package:dwallet/app/data/data_sources/local/local_data_source.dart';
 import 'package:dwallet/app/data/data_sources/remote/client.dart';
 import 'package:dwallet/app/data/data_sources/remote/remote_data_source.dart';
 import 'package:dwallet/app/data/models/coin_historical_data_model.dart';
+import 'package:dwallet/app/data/models/coin_info_model.dart';
 import 'package:dwallet/app/data/models/coin_model.dart';
 import 'package:dwallet/app/data/models/token_model.dart';
 import 'package:dwallet/app/data/models/verification_model.dart';
@@ -328,6 +329,17 @@ class AppRepositoryImpl implements AppRepository {
     try {
       var response = localDataSource!.saveCoins(coins);
       return Right(response);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, CoinInfoModel>> getTokenMarketInfo(Map<String,dynamic> parameters,String id) async{
+    try {
+      Response response = await remoteDataSource!.get(url: 'coins/$id',queryParameters: parameters);
+      CoinInfoModel coinInfo = CoinInfoModel.fromJson(response.data);
+      return Right(coinInfo);
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.toString()));
     }

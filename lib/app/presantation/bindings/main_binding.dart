@@ -3,6 +3,7 @@ import 'package:dwallet/app/domain/use_cases/home/get_coins_info_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_eth_address_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_historical_data_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_token_balance_usecase.dart';
+import 'package:dwallet/app/domain/use_cases/home/get_token_market_info.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_token_name_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/save_coin_to_local_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/send_transaction_usecase.dart';
@@ -66,6 +67,8 @@ class MainBinding extends Bindings {
         SaveCoinsToLocalUseCase(repository: Get.find<AppRepository>()));
     Get.put<SendTransactionUseCase>(
         SendTransactionUseCase(repository: Get.find<AppRepository>()));
+    Get.put<GetTokenMarketInfoUseCase>(
+        GetTokenMarketInfoUseCase(repository: Get.find<AppRepository>()));
     Get.put<WalletController>(WalletController());
 
   }
