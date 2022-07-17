@@ -8,6 +8,7 @@ class CoinModel {
   String? coingeckoId;
   String? chainId;
   List<String>? jrpcApi;
+  // List<String>? jrpcApiTest;
   String? imageUrl;
   double? balance=0;
   CoinHistoricalDataModel? historicalData;
@@ -48,6 +49,7 @@ class CoinModel {
     coingeckoId = json['coingeckoId'];
     chainId = json['chainId'];
     jrpcApi = json['jrpcApi'].cast<String>();
+    // jrpcApiTest = json['jrpcApiTest'].cast<String>();
     imageUrl = json['imageUrl'];
   }
 

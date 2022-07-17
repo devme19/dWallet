@@ -1,8 +1,5 @@
-import 'dart:io';
-
 import 'package:dwallet/app/core/either.dart';
 import 'package:dwallet/app/core/use_case.dart';
-import 'package:dwallet/app/data/data_sources/remote/client.dart';
 import 'package:dwallet/app/data/models/coin_historical_data_model.dart';
 import 'package:dwallet/app/data/models/coin_model.dart';
 import 'package:dwallet/app/data/models/network_model.dart';
@@ -27,12 +24,8 @@ import 'package:dwallet/app/presantation/routes/app_routes.dart';
 import 'package:dwallet/app/presantation/utils/state_status.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:bip39/bip39.dart' as bip39;
-import 'package:get_storage/get_storage.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import '../../domain/use_cases/home/save_eth_address_usecase.dart';
 import '../../web3/src/crypto/formatting.dart';
 import '../../web3/web3dart.dart';
@@ -64,6 +57,7 @@ class WalletController extends GetxController{
   TextEditingController tokenDecimalController = TextEditingController();
   NetworkModel? selectedNetwork;
   CoinModel? tokenToAdd;
+  RxString usdValue = "".obs;
 
   @override
   void onInit() {
@@ -86,35 +80,35 @@ class WalletController extends GetxController{
   createNetworksList(){
     networks.clear();
     networks.add(NetworkModel(name: "Ethereum",apiUrls: [
-    'https://ethereumnodelight.app.runonflux.io',
-    'https://eth-rpc.gateway.pokt.network',
-    'https://main-rpc.linkpool.io',
+      'https://ethereumnodelight.app.runonflux.io',
+      'https://eth-rpc.gateway.pokt.network',
+      'https://main-rpc.linkpool.io',
     ],
-    assetPlatform: "ethereum",
-    imageUrl: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png?1595348880'
+        assetPlatform: "ethereum",
+        imageUrl: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png?1595348880'
     ));
     networks.add(NetworkModel(name: "BNB Smart Chain",apiUrls: [
-    'https://bscrpc.com',
-    'wss://bsc-mainnet.nodereal.io/ws/v1/64a9df0874fb4a93b9d0a3849de012d3',
-    'https://bsc-dataseed3.defibit.io'
+      'https://bscrpc.com',
+      'wss://bsc-mainnet.nodereal.io/ws/v1/64a9df0874fb4a93b9d0a3849de012d3',
+      'https://bsc-dataseed3.defibit.io'
     ],
-    assetPlatform: "binance-smart-chain",
-    imageUrl: 'https://assets.coingecko.com/coins/images/17271/large/icon_200px_16bit.png'
+        assetPlatform: "binance-smart-chain",
+        imageUrl: 'https://assets.coingecko.com/coins/images/17271/large/icon_200px_16bit.png'
     ));
     networks.add(NetworkModel(name: "Polygan",apiUrls: [
-    'https://rpc-mainnet.matic.quiknode.pro',
-    'https://poly-rpc.gateway.pokt.network',
-    'https://matic-mainnet-full-rpc.bwarelabs.com',
+      'https://rpc-mainnet.matic.quiknode.pro',
+      'https://poly-rpc.gateway.pokt.network',
+      'https://matic-mainnet-full-rpc.bwarelabs.com',
     ],
-    assetPlatform: "polygon-pos",
-    imageUrl: 'https://assets.coingecko.com/coins/images/4713/large/matic-token-icon.png'
+        assetPlatform: "polygon-pos",
+        imageUrl: 'https://assets.coingecko.com/coins/images/4713/large/matic-token-icon.png'
     ));
 
     networks.add(NetworkModel(name: "Fantom",apiUrls: [
-    'https://rpc2.fantom.network'
+      'https://rpc2.fantom.network'
     ],
-    assetPlatform: "fantom",
-    imageUrl: 'https://assets.coingecko.com/coins/images/4001/large/Fantom.png?1558015016'
+        assetPlatform: "fantom",
+        imageUrl: 'https://assets.coingecko.com/coins/images/4001/large/Fantom.png?1558015016'
     ));
     selectedNetwork = networks[0];
   }
@@ -329,13 +323,13 @@ class WalletController extends GetxController{
 
   }
   getBalance(String url,CoinModel coin)async{
-     GetBalanceUseCase getBalanceUseCase  = Get.find();
-     Either response= await getBalanceUseCase.call(Params(value: url));
-     if(response.isRight){
-        coin.balance = response.right;
-        totalBalance += (coin.usd! * coin.balance!);
-        update();
-     }
+    GetBalanceUseCase getBalanceUseCase  = Get.find();
+    Either response= await getBalanceUseCase.call(Params(value: url));
+    if(response.isRight){
+      coin.balance = response.right;
+      totalBalance += (coin.usd! * coin.balance!);
+      update();
+    }
   }
 
   add(SecretItem item){
@@ -449,6 +443,7 @@ class WalletController extends GetxController{
             coin.chainId= '97';
             // coin.network = 'BNB Smart Chain';
             coin.jrpcApi = [
+              // 'https://bscrpc.com',
               'https://data-seed-prebsc-1-s2.binance.org:8545',
               'https://data-seed-prebsc-2-s2.binance.org:8545',
               'https://data-seed-prebsc-2-s3.binance.org:8545'];
@@ -577,19 +572,19 @@ class WalletController extends GetxController{
   }
 
   sendTransaction({String? receiveAddress, double? amount, String? apiUrl}){
-   SendTransactionUseCase sendTransaction = Get.find();
-   Map<String,dynamic> body = {
-     'receiveAddress':receiveAddress,
-     'amount':amount,
-     'apiUrl':apiUrl
-   };
-   sendTransaction.call(Params(body: body)).then((response){
-     if(response.isRight){
-       print('TxHash ${response.right}');
-     }else if(response.isLeft){
+    SendTransactionUseCase sendTransaction = Get.find();
+    Map<String,dynamic> body = {
+      'receiveAddress':receiveAddress,
+      'amount':amount,
+      'apiUrl':apiUrl
+    };
+    sendTransaction.call(Params(body: body)).then((response){
+      if(response.isRight){
+        print('TxHash ${response.right}');
+      }else if(response.isLeft){
 
-     }
-   });
+      }
+    });
 
   }
 

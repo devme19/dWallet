@@ -46,11 +46,11 @@ class _ChooseNetworkPageState extends State<ChooseNetworkPage> {
         Column(
           children: [
             Expanded(
-              child: SearchableList<NetworkModel>.seperated(
+              child: SearchableList<NetworkModel>(
 
-                seperatorBuilder: (p0, p1) {
-                  return const Divider();
-                },
+                // seperatorBuilder: (p0, p1) {
+                //   return const Divider();
+                // },
 
                 initialList: widget.networks!,
                 builder: (NetworkModel network) => NetworkItemWidget(network: network,networkStr: widget.network!.name,selectedNetwork: selectedNetwork),

@@ -88,9 +88,9 @@ class AddCustomTokenPage extends GetView<WalletController> {
                         Row(
                           children: [
 
-                            GetBuilder<WalletController>(builder: (walletController){
+                            GetBuilder<WalletController>(builder: (controller){
                               return Text(
-                                walletController.selectedNetwork!.name!,
+                                controller.selectedNetwork!.name!,
                                 style: TextStyle(
                                     color:
                                     IColor().DARK_TEXT_COLOR.withOpacity(0.5),

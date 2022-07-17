@@ -96,7 +96,7 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
           children: [
             const AppBarWidget(),
             Expanded(
-              child: 
+              child:
               SingleChildScrollView(
                 child: Column(
                   children: [

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dio/dio.dart';
 import 'package:dwallet/app/core/exception.dart';
 import 'package:dwallet/app/core/failures.dart';
@@ -152,23 +154,40 @@ class AppRepositoryImpl implements AppRepository {
   }
 
   @override
-  Future<Either<Failure, String>> sendTransaction(Map<String,dynamic> body) async{
+  Future<Either<Failure, TransactionInformation>> sendTransaction(Map<String,dynamic> body) async{
     try {
       String privateKey = localDataSource!.getPrivateKey();
       String apiUrl = body['apiUrl'];
+      // String chainId = body['chainId'];
       String receiveAddress = body['receiveAddress'];
-      double amount = body['amount'];
+      String sendAddress = localDataSource!.getEthereumAddress();
+      var amount = body['amount'];
+      var a = BigInt.from(1);
+      // print(EtherAmount.inWei(a));
       EthPrivateKey credentials = EthPrivateKey.fromHex(privateKey);
+      // print(EtherAmount.inWei(BigInt.from(amount) * BigInt.from(pow(10, 18))));
+      var s = EtherAmount.fromUnitAndValue(EtherUnit.ether, 1);
+      print(s);
+      EtherAmount gas =await Client().web3(apiUrl).getGasPrice();
+      // int gas1 =await Client().web3(apiUrl).estimateGas(sender: EthereumAddress.fromHex(sendAddress),to: );
+      BigInt bigIntChainId = await Client().web3(apiUrl).getChainId();
+      int chainId = int.parse(bigIntChainId.toString());
+     print('gas $gas');
+
       String txHash = await Client().web3(apiUrl).sendTransaction(
+        chainId: chainId,
         credentials,
         Transaction(
+          from: EthereumAddress.fromHex(sendAddress),
           to: EthereumAddress.fromHex(receiveAddress),
-          gasPrice: EtherAmount.inWei(BigInt.one),
+          gasPrice: gas,
           maxGas: 100000,
-          value: EtherAmount.fromUnitAndValue(EtherUnit.ether, amount),
+          value: s,
         ),
       );
-      return Right(txHash);
+      TransactionInformation transaction = await Client().web3(apiUrl).getTransactionByHash(txHash);
+      print(transaction);
+      return Right(transaction);
     }catch (e) {
       return Left(
           ServerFailure(errorMessage: e.toString()));

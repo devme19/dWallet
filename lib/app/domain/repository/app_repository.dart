@@ -5,6 +5,8 @@ import 'package:dwallet/app/data/models/coin_model.dart';
 import 'package:dwallet/app/data/models/token_model.dart';
 import 'package:dwallet/app/data/models/verification_model.dart';
 
+import '../../web3/web3dart.dart';
+
 abstract class AppRepository {
   ////////////////////// USER ///////////////////////////
   Future<Either<Failure, bool>> login(Map<String, dynamic> body);
@@ -24,7 +26,7 @@ abstract class AppRepository {
 
   Future<Either<Failure, List<CoinModel>>> getTokenInfo(Map<String,dynamic> parameters);
   Future<Either<Failure, double>> getBalance(String apiUrl);
-  Future<Either<Failure, String>> sendTransaction(Map<String,dynamic> body);
+  Future<Either<Failure, TransactionInformation>> sendTransaction(Map<String,dynamic> body);
   Future<Either<Failure, CoinHistoricalDataModel>> getHistoricalData(Map<String,dynamic> parameters);
   Future<Either<Failure, String>> getTokenName(String contractAddress,String apiUrl);
   Future<Either<Failure, String>> getTokenSymbol(String contractAddress,String apiUrl);

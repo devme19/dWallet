@@ -29,9 +29,9 @@ class AppRoutes {
 class App {
   static final pages = [
     GetPage(
-      name: AppRoutes.splashPage,
-      page: () => SplashPage(),
-      bindings:[MainBinding(),SplashPageBinding()]
+        name: AppRoutes.splashPage,
+        page: () => SplashPage(),
+        bindings:[MainBinding(),SplashPageBinding()]
     ),
     GetPage(
       name: AppRoutes.introPage,

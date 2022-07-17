@@ -1,35 +1,38 @@
 import 'package:dwallet/app/data/models/coin_model.dart';
+import 'package:dwallet/app/presantation/controllers/wallet_controller.dart';
 import 'package:dwallet/app/presantation/pages/global_widgets/input_widget.dart';
 import 'package:dwallet/app/presantation/theme/themes.dart';
+import 'package:dwallet/app/web3/web3dart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-
-class SendPage extends StatefulWidget {
+class SendPage extends GetView<WalletController> {
   SendPage({
     Key? key,
-    this.coin
+    this.coin,
+    this.onBack
   }) : super(key: key);
   CoinModel? coin;
-  @override
-  State<SendPage> createState() => _SendPageState();
-}
-
-class _SendPageState extends State<SendPage> {
+  ValueChanged<TransactionInformation>? onBack;
   TextEditingController amountController = TextEditingController();
+  TextEditingController recipientController = TextEditingController();
   String usdValue="0";
-  onAmountChange(String value){
-    setState(() {
-      usdValue = (widget.coin!.usd!*double.parse(value)).toStringAsFixed(2);
-    });
+  bool isNumeric(String s) {
+    if (s.isEmpty) {
+      return false;
+    }
+    return double.tryParse(s) != null;
   }
-
+  onAmountChange(String value){
+    if(isNumeric(value)) {
+      controller.usdValue.value = (coin!.usd!*double.parse(value)).toStringAsFixed(2);
+    }
+  }
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return 
-      
-      SingleChildScrollView(
-        child: Container(
+    return Obx(()=>SingleChildScrollView(
+      child: Container(
         padding: EdgeInsets.symmetric(horizontal: size.width * 0.033),
         height: size.height * 0.8,
         decoration: BoxDecoration(
@@ -38,7 +41,7 @@ class _SendPageState extends State<SendPage> {
         child: Column(
           // crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            
+
             Expanded(
               child: Column(
                 children: [
@@ -70,7 +73,7 @@ class _SendPageState extends State<SendPage> {
                       Expanded(
                         flex: 2,
                         child: Text(
-                          "Send ${widget.coin!.symbol!}",
+                          "Send ${coin!.symbol!}",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 18,
@@ -82,47 +85,21 @@ class _SendPageState extends State<SendPage> {
                     ],
                   ),
                   const SizedBox(height: 16.0,),
-                  // InkWell(
-                  //   child: Container(
-                  //     padding: const EdgeInsets.all(15),
-                  //     margin: const EdgeInsets.only(bottom: 8),
-                  //     decoration: BoxDecoration(
-                  //         borderRadius: BorderRadius.circular(8),
-                  //         color: IColor().DARK_BUTTOM_COLOR.withOpacity(0.1)),
-                  //     child: Row(
-                  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //       children: [
-                  //         const Text(
-                  //           "Network",
-                  //           style: TextStyle(fontSize: 18),
-                  //         ),
-                  //         Row(
-                  //           children: [
-                  //             Text(
-                  //               "Bitcoin",
-                  //               style: TextStyle(
-                  //                   color:
-                  //                       IColor().DARK_TEXT_COLOR.withOpacity(0.5),
-                  //                   fontSize: 18),
-                  //             ),
-                  //             Icon(
-                  //               Icons.arrow_forward,
-                  //               color: IColor().DARK_TEXT_COLOR.withOpacity(0.5),
-                  //               size: 20,
-                  //             )
-                  //           ],
-                  //         )
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
                   Row(
                     children: [
                       Expanded(
-                        child: InputWidget(hint: "Recipient Address"),
+                        child: InputWidget(hint: "Recipient Address",controller: recipientController,),
                       ),
                       InkWell(
-                        onTap: () {},
+                        onTap: () async{
+                          ClipboardData? cData = await Clipboard.getData(Clipboard.kTextPlain);
+                          if(cData != null){
+                            String? copiedText = cData.text;
+                            if(copiedText!= null){
+                              recipientController.text = copiedText;
+                            }
+                          }
+                        },
                         child: Container(
                           width: 65,
                           height: 65,
@@ -156,11 +133,11 @@ class _SendPageState extends State<SendPage> {
                     Row(
                       children: [
                         Expanded(
-                          child: InputWidget(hint: "Amount",controller: amountController,onChange: onAmountChange),
+                          child: InputWidget(hint: "Amount",controller: amountController,onChange: onAmountChange,isNumberMode: true),
                         ),
                         InkWell(
                           onTap: () {
-                            amountController.text = widget.coin!.balance!.toString();
+                            amountController.text = coin!.balance!.toString();
                             onAmountChange(amountController.text);
                           },
                           child: Container(
@@ -192,7 +169,7 @@ class _SendPageState extends State<SendPage> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text('\$$usdValue'),
+                        child: Text('\$${controller.usdValue.value}'),
                       ),
                     ],
                   )
@@ -202,8 +179,8 @@ class _SendPageState extends State<SendPage> {
             Column(
               children: [
                 Container(
-                  margin: EdgeInsets.only(bottom: 10),
-                  padding: EdgeInsets.all(15),
+                  margin: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.all(15),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       color: IColor().DARK_BUTTOM_COLOR.withOpacity(0.1)),
@@ -212,7 +189,7 @@ class _SendPageState extends State<SendPage> {
                       Text(
                         "You can’t undo this transfer",
                         style:
-                            TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                       ),
                       SizedBox(
                         height: 20,
@@ -229,14 +206,20 @@ class _SendPageState extends State<SendPage> {
                   children: [
                     Expanded(
                         child: ElevatedButton(
-                            onPressed: () {}, child: Text("Send"))),
+                            onPressed: () {
+                              controller.sendTransaction(receiveAddress: recipientController.text,amount: double.parse(amountController.text),apiUrl: coin!.jrpcApi![0]);
+                            }, child: Text("Send"))),
                   ],
-                )
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
               ],
             )
           ],
         ),
-    ),
-      );
+      ),
+    ));
   }
+
 }

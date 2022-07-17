@@ -4,7 +4,6 @@ import 'package:dwallet/app/presantation/theme/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:searchable_listview/searchable_listview.dart';
-
 import '../../controllers/wallet_controller.dart';
 
 

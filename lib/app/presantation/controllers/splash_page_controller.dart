@@ -12,7 +12,7 @@ class SplashPageController extends GetxController{
       await Future.delayed(const Duration(seconds: 1));
       if(response.isRight){
         if(response.right.isNotEmpty){
-          Get.offAndToNamed(AppRoutes.homePage);
+          Get.offAllNamed(AppRoutes.homePage,parameters: {'initial':'false'});
           // Get.offAndToNamed(AppRoutes.introPage);
         }
         else{

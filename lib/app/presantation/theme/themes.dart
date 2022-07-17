@@ -115,4 +115,5 @@ class IColor {
   Color DARK_RULE_WIDGET_COLOR = Color(0xff636366);
   Color DARK_BUTTOM_COLOR = Color(0xffF2F2F7);
   Color DARK_WARNING_COLOR = Color(0xffFF453A);
+  Color DARK_HOME_LIST_ITEM_COLOR = Color(0xff2C2C2E);
 }

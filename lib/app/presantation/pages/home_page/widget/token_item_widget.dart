@@ -27,7 +27,7 @@ class TokenItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<WalletController>(builder: (controller){
       return Container(
-          color: IColor().DARK_HOME_LIST_BG_COLOR,
+        color: IColor().DARK_HOME_LIST_BG_COLOR,
         // margin: const EdgeInsets.symmetric(vertical: 5,),
         height: 160,
         child:
@@ -35,8 +35,8 @@ class TokenItemWidget extends StatelessWidget {
           margin: const EdgeInsets.symmetric(vertical: 8.0,horizontal: 20.0),
           padding: EdgeInsets.all(8.0),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Color(0xff2C2C2E),
+            borderRadius: BorderRadius.circular(10),
+            color: Color(0xff2C2C2E),
           ),
           child: Column(children: [
 
@@ -112,7 +112,7 @@ class TokenItemWidget extends StatelessWidget {
 
                           Row(
                             children: [
-                              Text(coin!.balance.toString() + ' '+ coin!.symbol!),
+                              Text('${coin!.balance!.toStringAsFixed(2)} ${coin!.symbol!}'),
                             ],
                           ),
                           Row(

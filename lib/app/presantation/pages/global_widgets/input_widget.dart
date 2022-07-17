@@ -1,11 +1,13 @@
 import 'package:dwallet/app/presantation/theme/themes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class InputWidget extends StatelessWidget {
   TextEditingController? controller;
   ValueChanged<String>? onSubmit;
   ValueChanged<String>? onChange;
-  InputWidget({Key? key, required this.hint,this.controller,this.onSubmit,this.onChange}) : super(key: key);
+  bool isNumberMode;
+  InputWidget({Key? key, required this.hint,this.controller,this.onSubmit,this.onChange,this.isNumberMode=false}) : super(key: key);
   String? hint;
 
   @override
@@ -17,7 +19,13 @@ class InputWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           color: Colors.transparent),
       child: TextField(
-        onSubmitted: (value)=>onSubmit!(value),
+        keyboardType:isNumberMode? TextInputType.number:TextInputType.text,
+        // ignore: curly_braces_in_flow_control_structures
+        onSubmitted: (value) {
+          if(onSubmit != null) {
+            onSubmit!(value);
+          }
+        },
         controller:controller,
         onChanged: onChange,
         decoration: InputDecoration(
