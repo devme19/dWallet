@@ -12,7 +12,7 @@ class CoinInfoPage extends GetView<WalletController> {
   CoinModel? coin;
   CoinInfoPage({Key? key,this.coin}) : super(key: key){
     _tooltipBehavior = TooltipBehavior(enable: true);
-
+    controller.chartInterval.value = 0;
     controller.getTokenMarketInfo(coin!.coingeckoId!);
     controller.getHistoricalData(coin: coin,id: coin!.coingeckoId,currency: 'usd',days: 7,interval: 'hourly');
   }
@@ -68,45 +68,48 @@ class CoinInfoPage extends GetView<WalletController> {
 
                 ],
               ),
-              controller.coinHistoricalData.value.points.isNotEmpty?
-              Container(
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                          colors: [Color(0xffFFD60A).withOpacity(0.1), Colors.black26])),
-                  width: double.infinity,
-                  height: 200,
-                  child:
-                  SfCartesianChart(
-                      primaryXAxis: CategoryAxis(isVisible: false,),
-                      primaryYAxis: CategoryAxis(isVisible: false),
-                      tooltipBehavior: _tooltipBehavior,
-                      plotAreaBorderColor: Colors.transparent,
+              GetBuilder<WalletController>(builder: (controller){
+                return controller.coinHistoricalData.points.isNotEmpty?
+                Container(
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                            colors: [Color(0xffFFD60A).withOpacity(0.1), Colors.black26])),
+                    width: double.infinity,
+                    height: 200,
+                    child:
+                    SfCartesianChart(
+                        primaryXAxis: CategoryAxis(isVisible: false,),
+                        primaryYAxis: CategoryAxis(isVisible: false),
+                        tooltipBehavior: _tooltipBehavior,
+                        plotAreaBorderColor: Colors.transparent,
 
-                      series: <ChartSeries<Point, String>>[
-                        LineSeries<Point, String>(
-                            width: 1,
-                            color: Colors.yellow,
-                            enableTooltip: true,
-                            dataSource:
-                            // asd,
-                            controller.coinHistoricalData.value.points,
-                            xValueMapper: (Point point, _) => point.date.toString(),
-                            yValueMapper: (Point point, _) => point.price,
-                            // Enable data label
-                            dataLabelSettings: const DataLabelSettings(isVisible: false))
-                      ]
-                  )
-              ):Container(
-                  width: double.infinity,
-                  height: 200,
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                          colors: [Color(0xffFFD60A).withOpacity(0.1), Colors.black26]))
-              ),
+                        series: <ChartSeries<Point, String>>[
+                          LineSeries<Point, String>(
+                              width: 1,
+                              color: Colors.yellow,
+                              enableTooltip: true,
+                              dataSource:
+                              // asd,
+                              controller.coinHistoricalData.points,
+                              xValueMapper: (Point point, _) => point.date.toString(),
+                              yValueMapper: (Point point, _) => point.price,
+                              // Enable data label
+                              dataLabelSettings: const DataLabelSettings(isVisible: false))
+                        ]
+                    )
+                ):Container(
+                    width: double.infinity,
+                    height: 200,
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                            colors: [Color(0xffFFD60A).withOpacity(0.1), Colors.black26]))
+                );
+              }),
+
               const SizedBox(height: 16.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

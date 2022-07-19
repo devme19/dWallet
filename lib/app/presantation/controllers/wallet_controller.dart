@@ -62,7 +62,7 @@ class WalletController extends GetxController{
   RxString usdValue = "".obs;
   RxInt chartInterval = 0.obs;
   Rx<CoinInfoModel> coinInfo = CoinInfoModel().obs;
-  Rx<CoinHistoricalDataModel> coinHistoricalData = CoinHistoricalDataModel().obs;
+  CoinHistoricalDataModel coinHistoricalData = CoinHistoricalDataModel();
   @override
   void onInit() {
     super.onInit();
@@ -125,6 +125,8 @@ class WalletController extends GetxController{
     update();
   }
   getHistoricalData({CoinModel? coin,String? id,String? currency,int? days,String? interval}){
+    coinHistoricalData = CoinHistoricalDataModel();
+    update();
     GetHistoricalDataUseCase getHistoricalDataUseCase = Get.find();
     Map<String,dynamic> parameters={
       'vs_currency':currency,
@@ -139,8 +141,7 @@ class WalletController extends GetxController{
         for (int i = 0; i < coin.historicalData!.prices!.length; i++) {
           points.add(Point(date: i+1, price: coin.historicalData!.prices![i][1]));
         }
-        coinHistoricalData.value.points.clear();
-        coinHistoricalData.value.points.addAll(points);
+        coinHistoricalData.points.addAll(points);
         coin.historicalData!.points.clear();
         coin.historicalData!.points.addAll(points);
         update();
@@ -169,10 +170,14 @@ class WalletController extends GetxController{
     });
   }
   loadCoins(){
+    totalBalance = 0;
+    update();
     GetCoinsFromLocalUseCase loadCoins = Get.find();
     loadCoins.call(NoParams()).then((response) {
       if(response.isRight){
         coins.clear();
+
+        filteredCoins.clear();
         coins.addAll(response.right);
         filteredCoins.addAll(coins);
         String ids ='';
