@@ -1,6 +1,7 @@
 import 'package:dwallet/app/core/either.dart';
 import 'package:dwallet/app/core/use_case.dart';
 import 'package:dwallet/app/data/models/coin_historical_data_model.dart';
+import 'package:dwallet/app/data/models/coin_info_model.dart';
 import 'package:dwallet/app/data/models/coin_model.dart';
 import 'package:dwallet/app/data/models/network_model.dart';
 import 'package:dwallet/app/data/models/token_model.dart';
@@ -59,7 +60,9 @@ class WalletController extends GetxController{
   NetworkModel? selectedNetwork;
   CoinModel? tokenToAdd;
   RxString usdValue = "".obs;
-
+  RxInt chartInterval = 0.obs;
+  Rx<CoinInfoModel> coinInfo = CoinInfoModel().obs;
+  Rx<CoinHistoricalDataModel> coinHistoricalData = CoinHistoricalDataModel().obs;
   @override
   void onInit() {
     super.onInit();
@@ -136,6 +139,8 @@ class WalletController extends GetxController{
         for (int i = 0; i < coin.historicalData!.prices!.length; i++) {
           points.add(Point(date: i+1, price: coin.historicalData!.prices![i][1]));
         }
+        coinHistoricalData.value.points.clear();
+        coinHistoricalData.value.points.addAll(points);
         coin.historicalData!.points.clear();
         coin.historicalData!.points.addAll(points);
         update();
@@ -183,6 +188,7 @@ class WalletController extends GetxController{
     });
   }
   getTokenMarketInfo(String id){
+    coinInfo.value = CoinInfoModel();
     GetTokenMarketInfoUseCase getTokenMarketInfo = Get.find();
     Map<String,dynamic> parameters={
       'market_data':true,
@@ -190,9 +196,9 @@ class WalletController extends GetxController{
       'developer_data':false,
       'sparkline':false
     };
-    getTokenMarketInfo.call(Params(body: parameters)).then((response){
+    getTokenMarketInfo.call(Params(body: parameters,id: id)).then((response){
       if(response.isRight){
-
+        coinInfo.value = response.right;
       }else if(response.isLeft){
 
       }

@@ -17,11 +17,12 @@ class CoinInfoModel {
 }
 class Links {
   List<String>? homepage;
-
-  Links({this.homepage});
+  List<String>? blockChainSites;
+  Links({this.homepage,this.blockChainSites});
 
   Links.fromJson(Map<String, dynamic> json) {
     homepage = json['homepage'].cast<String>();
+    blockChainSites = json['blockchain_site'].cast<String>();
   }
 }
 
@@ -29,7 +30,7 @@ class Links {
 class MarketData {
 
 
-  int? totalSupply;
+  double? totalSupply;
   double? circulatingSupply;
 
   MarketData({this.totalSupply,this.circulatingSupply, });
