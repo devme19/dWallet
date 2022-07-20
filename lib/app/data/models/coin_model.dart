@@ -13,6 +13,7 @@ class CoinModel {
   double? balance=0;
   CoinHistoricalDataModel? historicalData;
   String? contractAddress;
+  bool? enable=true;
 
   double? usd = 0.0;
   double? usdMarketCap;
@@ -34,7 +35,7 @@ class CoinModel {
         this.usd24hVol,
         this.usd24hChange,
         this.lastUpdatedAt,
-
+        this.enable = true
       });
   CoinModel.fromJson2(Map<String, dynamic> json) {
     usd = json['usd'];
@@ -51,6 +52,7 @@ class CoinModel {
     jrpcApi = json['jrpcApi'].cast<String>();
     // jrpcApiTest = json['jrpcApiTest'].cast<String>();
     imageUrl = json['imageUrl'];
+    enable = json['enable'];
   }
 
   static Map<String, dynamic> toMap(CoinModel coin) =>{
@@ -65,6 +67,7 @@ class CoinModel {
     'usd_24h_vol' : coin.usd24hVol,
     'usd_24h_change' : coin.usd24hChange,
     'last_updated_at' : coin.lastUpdatedAt,
+    'enable':coin.enable
   };
   static String encode(List<CoinModel> coins) => json.encode(
     coins

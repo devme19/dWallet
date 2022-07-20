@@ -1,6 +1,7 @@
 import 'package:dwallet/app/data/models/coin_model.dart';
 import 'package:dwallet/app/presantation/controllers/wallet_controller.dart';
 import 'package:dwallet/app/presantation/pages/add_custom_token_page/add_custom_token_page.dart';
+import 'package:dwallet/app/presantation/pages/assets_page/asset_page.dart';
 import 'package:dwallet/app/presantation/pages/coin_page/coin_page.dart';
 import 'package:dwallet/app/presantation/pages/global_widgets/bg_widget.dart';
 import 'package:dwallet/app/presantation/pages/global_widgets/search_coin_widget.dart';
@@ -220,14 +221,20 @@ class HomePage extends GetView<WalletController> {
                           ),
                           InkWell(
                             onTap: () {
-
-                              showModalBottomSheet(
-                                  backgroundColor: Colors.transparent,
+                              Get.bottomSheet(
                                   isScrollControlled: true,
-                                  context: Get.context!,
-                                  builder: (context) {
-                                    return AddCustomTokenPage();
-                                  });
+                                  AssetPage()).then((value)
+                              {
+                                controller.clearSearch();
+                                controller.loadCoins();
+                              });
+                              // showModalBottomSheet(
+                              //     backgroundColor: Colors.transparent,
+                              //     isScrollControlled: true,
+                              //     context: Get.context!,
+                              //     builder: (context) {
+                              //       return AddCustomTokenPage();
+                              //     });
                             },
                             child: Container(
                               padding: const EdgeInsets.all(8),
@@ -244,7 +251,8 @@ class HomePage extends GetView<WalletController> {
                     ),
                     Visibility(
                       visible: controller.searchVisibility,
-                      child: Container(
+                      child:
+                      Container(
                         margin: const EdgeInsets.only(left: 10,right:10,top: 16),
                         height: 50,
                         decoration: BoxDecoration(

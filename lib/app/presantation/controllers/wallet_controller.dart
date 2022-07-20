@@ -69,7 +69,7 @@ class WalletController extends GetxController{
     createNetworksList();
   }
   searchCoin(String searchTerm) {
-    filteredCoins =coins
+    filteredCoins =getEnabledCoins(coins)
         .where(
             (element) =>
             element.name!.toLowerCase().contains(searchTerm))
@@ -78,7 +78,7 @@ class WalletController extends GetxController{
   }
   clearSearch(){
     invisibleSearchBar();
-    filteredCoins = coins;
+    filteredCoins = getEnabledCoins(coins);
     update();
   }
   createNetworksList(){
@@ -169,6 +169,9 @@ class WalletController extends GetxController{
       }
     });
   }
+  List<CoinModel> getEnabledCoins(List<CoinModel> coins){
+    return coins.where((element) => element.enable!).toList();
+  }
   loadCoins(){
     totalBalance = 0;
     update();
@@ -176,12 +179,11 @@ class WalletController extends GetxController{
     loadCoins.call(NoParams()).then((response) {
       if(response.isRight){
         coins.clear();
-
-        filteredCoins.clear();
         coins.addAll(response.right);
-        filteredCoins.addAll(coins);
+        filteredCoins.clear();
+        filteredCoins.addAll(getEnabledCoins(coins));
         String ids ='';
-        for(CoinModel coin in coins){
+        for(CoinModel coin in filteredCoins){
           ids += '${coin.coingeckoId!},';
         }
         ids= ids.substring(0,ids.length-1);
@@ -395,6 +397,7 @@ class WalletController extends GetxController{
     }
 
   }
+
   getCoinsPrice(String ids)async{
     GetCoinInfoUseCase getCoinsInfoUseCase  = Get.find();
     Map<String,dynamic> parameters = {
