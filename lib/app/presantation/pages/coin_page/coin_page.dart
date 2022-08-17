@@ -9,6 +9,8 @@ import 'package:dwallet/app/presantation/theme/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../receive_page/receive_page.dart';
+
 class CoinPage extends GetView<WalletController> {
   CoinModel? coin;
   CoinPage({Key? key,this.coin}) : super(key: key){
@@ -147,7 +149,12 @@ class CoinPage extends GetView<WalletController> {
                           Column(
                             children: [
                               InkWell(
-                                onTap: () {},
+                                onTap: () {
+                                  Get.bottomSheet(
+                                      isScrollControlled: true,
+                                      ReceivePage(
+                                        coin: coin,));
+                                },
                                 child: Container(
                                   width: 50,
                                   height: 50,

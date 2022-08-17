@@ -2,6 +2,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:dwallet/app/data/models/coin_historical_data_model.dart';
 import 'package:dwallet/app/data/models/coin_model.dart';
 import 'package:dwallet/app/presantation/theme/themes.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -176,28 +177,34 @@ class CoinInfoPage extends GetView<WalletController> {
           borderRadius: BorderRadius.circular(8),
           color: IColor().DARK_BUTTOM_COLOR.withOpacity(0.1)),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             title!,
             style: TextStyle(fontSize: 18),
           ),
-          Row(
-            children: [
-              Text(
-                value!,
-                style: TextStyle(
-                    color:
-                    IColor().DARK_TEXT_COLOR.withOpacity(0.5),
-                    fontSize: 18),
-              ),
-              hasIcon!?
-              Icon(
-                Icons.arrow_forward,
-                color: IColor().DARK_TEXT_COLOR.withOpacity(0.5),
-                size: 20,
-              ):Container()
-            ],
+          Expanded(
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    value!,
+                    maxLines: 1,
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      overflow: TextOverflow.ellipsis,
+                        color:
+                        IColor().DARK_TEXT_COLOR.withOpacity(0.5),
+                        fontSize: 18),
+                  ),
+                ),
+                hasIcon!?
+                Icon(
+                  Icons.arrow_forward,
+                  color: IColor().DARK_TEXT_COLOR.withOpacity(0.5),
+                  size: 20,
+                ):Container()
+              ],
+            ),
           )
         ],
       ),

@@ -163,10 +163,7 @@ class AppRepositoryImpl implements AppRepository {
       String receiveAddress = body['receiveAddress'];
       String sendAddress = localDataSource!.getEthereumAddress();
       var amount = body['amount'];
-      var a = BigInt.from(1);
-      // print(EtherAmount.inWei(a));
       EthPrivateKey credentials = EthPrivateKey.fromHex(privateKey);
-      // print(EtherAmount.inWei(BigInt.from(amount) * BigInt.from(pow(10, 18))));
       var s = EtherAmount.fromUnitAndValue(EtherUnit.ether, 1);
       print(s);
       EtherAmount gas =await Client().web3(apiUrl).getGasPrice();

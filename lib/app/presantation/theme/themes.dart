@@ -40,6 +40,7 @@ class Themes {
   static final dark = ThemeData.dark().copyWith(
       iconTheme: IconThemeData(color: IColor().DARK_PRIMARY_COLOR),
       unselectedWidgetColor: Colors.red,
+      primaryColorDark: IColor().DARK_BUTTOM_COLOR,
       checkboxTheme: CheckboxThemeData(
         materialTapTargetSize: MaterialTapTargetSize.padded,
         fillColor: MaterialStateProperty.all(IColor().Dark_CHECK_COLOR),

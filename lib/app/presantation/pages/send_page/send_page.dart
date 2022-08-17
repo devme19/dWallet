@@ -31,7 +31,8 @@ class SendPage extends GetView<WalletController> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Obx(()=>SingleChildScrollView(
+    return Obx(()=>
+        SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: size.width * 0.033),
         height: size.height * 0.8,

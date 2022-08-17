@@ -16,7 +16,7 @@ class ChooseNetworkPage extends StatefulWidget {
 }
 
 class _ChooseNetworkPageState extends State<ChooseNetworkPage> {
-  List<NetworkModel> _filterUserList(String searchTerm) {
+  List<NetworkModel> _filterNetworkList(String searchTerm) {
     return widget.networks!
         .where(
           (element) =>
@@ -40,7 +40,7 @@ class _ChooseNetworkPageState extends State<ChooseNetworkPage> {
         padding: EdgeInsets.all(16.0),
         height: Get.height * 0.8,
         decoration: BoxDecoration(
-            color: IColor().DARK_BG_COLOR,
+            color: Get.theme.backgroundColor,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(30))),
         child:
         Column(
@@ -54,7 +54,7 @@ class _ChooseNetworkPageState extends State<ChooseNetworkPage> {
 
                 initialList: widget.networks!,
                 builder: (NetworkModel network) => NetworkItemWidget(network: network,networkStr: widget.network!.name,selectedNetwork: selectedNetwork),
-                filter: _filterUserList,
+                filter: _filterNetworkList,
                 emptyWidget:  const Padding(padding: EdgeInsets.all(16.0),child: Center(child: Text("No Item")),),
                 onItemSelected: (NetworkModel item) {},
                 inputDecoration: InputDecoration(

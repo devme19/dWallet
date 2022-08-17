@@ -63,6 +63,7 @@ class WalletController extends GetxController{
   RxInt chartInterval = 0.obs;
   Rx<CoinInfoModel> coinInfo = CoinInfoModel().obs;
   CoinHistoricalDataModel coinHistoricalData = CoinHistoricalDataModel();
+  RxString ethAddress = ''.obs;
   @override
   void onInit() {
     super.onInit();
@@ -570,6 +571,7 @@ class WalletController extends GetxController{
     GetEthAddressUseCase getEthAddress = Get.find();
     Either response = await getEthAddress.call(NoParams());
     if(response.isRight){
+      ethAddress.value = response.right;
       return response.right;
     }else if(response.isLeft){
       return "";
