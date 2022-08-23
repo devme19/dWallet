@@ -28,6 +28,7 @@ class BlockNum {
         blockNum = 2;
 
   /// Generates the block parameter as it is accepted by the Ethereum client.
+  ///
   String toBlockParam() {
     if (useAbsolute) return '0x${blockNum.toRadixString(16)}';
 

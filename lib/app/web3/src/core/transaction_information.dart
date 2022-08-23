@@ -1,8 +1,10 @@
 part of 'package:dwallet/app/web3/web3dart.dart';
 
 class TransactionInformation {
+
   TransactionInformation.fromMap(Map<String, dynamic> map)
-      : blockHash = map['blockHash'] as String,
+      :
+        blockHash = map['blockHash']!= null? map['blockHash'] as String:null,
         blockNumber = map['blockNumber'] != null
             ? BlockNum.exact(int.parse(map['blockNumber'] as String))
             : const BlockNum.pending(),
@@ -19,6 +21,7 @@ class TransactionInformation {
             ? int.parse(map['transactionIndex'] as String)
             : null,
         value = EtherAmount.inWei(BigInt.parse(map['value'] as String)),
+        bigIntValue = BigInt.parse(map['value'] as String),
         v = int.parse(map['v'] as String),
         r = hexToInt(map['r'] as String),
         s = hexToInt(map['s'] as String);
@@ -70,9 +73,10 @@ class TransactionInformation {
 
   /// ECDSA signature s
   final BigInt s;
-
+  final BigInt bigIntValue;
   /// The ECDSA full signature used to sign this transaction.
   MsgSignature get signature => MsgSignature(r, s, v);
+
 }
 
 class TransactionReceipt {

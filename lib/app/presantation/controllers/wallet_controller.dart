@@ -5,6 +5,7 @@ import 'package:dwallet/app/data/models/coin_info_model.dart';
 import 'package:dwallet/app/data/models/coin_model.dart';
 import 'package:dwallet/app/data/models/network_model.dart';
 import 'package:dwallet/app/data/models/token_model.dart';
+import 'package:dwallet/app/data/models/transaction_model.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_balance_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_coins_from_local_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_coins_info_usecase.dart';
@@ -20,12 +21,14 @@ import 'package:dwallet/app/domain/use_cases/home/save_coin_to_local_usecase.dar
 import 'package:dwallet/app/domain/use_cases/home/send_transaction_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/private_key/get_private_key_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/private_key/save_private_key_usecase.dart';
+import 'package:dwallet/app/presantation/pages/coin_page/widgets/transaction_widget_item.dart';
 import 'package:dwallet/app/presantation/pages/global_widgets/success_dialog.dart';
 import 'package:dwallet/app/presantation/pages/secret_phrase_page/widget/secret_phrase_item_widget.dart';
 import 'package:dwallet/app/presantation/routes/app_routes.dart';
 import 'package:dwallet/app/presantation/utils/state_status.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:bip39/bip39.dart' as bip39;
 import '../../domain/use_cases/home/save_eth_address_usecase.dart';
@@ -64,6 +67,8 @@ class WalletController extends GetxController{
   Rx<CoinInfoModel> coinInfo = CoinInfoModel().obs;
   CoinHistoricalDataModel coinHistoricalData = CoinHistoricalDataModel();
   RxString ethAddress = ''.obs;
+  RxList transactions=[].obs;
+  int retryCount=0;
   @override
   void onInit() {
     super.onInit();
@@ -85,6 +90,8 @@ class WalletController extends GetxController{
   createNetworksList(){
     networks.clear();
     networks.add(NetworkModel(name: "Ethereum",apiUrls: [
+      'https://kovan.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+      'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
       'https://ethereumnodelight.app.runonflux.io',
       'https://eth-rpc.gateway.pokt.network',
       'https://main-rpc.linkpool.io',
@@ -458,8 +465,10 @@ class WalletController extends GetxController{
             coin.symbol= 'ETH';
             coin.coingeckoId= 'ethereum';
             coin.chainId= '4002';
+            coin.decimal = 18;
 
             coin.jrpcApi = [
+              'https://kovan.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
               'https://ropsten.infura.io/v3/c8694e395984403b99cdef8e8182da43',
               'wss://ropsten.infura.io/ws/v3/c8694e395984403b99cdef8e8182da43',
               'https://rinkeby.infura.io/v3/c8694e395984403b99cdef8e8182da43',
@@ -468,6 +477,7 @@ class WalletController extends GetxController{
             coin.imageUrl = 'https://assets.coingecko.com/coins/images/279/large/ethereum.png?1595348880';
             break;
           case 'binancecoin':
+            coin.decimal = 18;
             coin.name = 'BNB';
             coin.symbol= 'BNB';
             coin.coingeckoId= 'binancecoin';
@@ -481,6 +491,7 @@ class WalletController extends GetxController{
             coin.imageUrl = 'https://assets.coingecko.com/coins/images/17271/large/icon_200px_16bit.png';
             break;
           case 'fantom':
+            coin.decimal = 18;
             coin.name = 'Fantom';
             coin.symbol= 'FTM';
             // coin.network = 'Fantom';
@@ -491,6 +502,7 @@ class WalletController extends GetxController{
             coin.imageUrl = 'https://assets.coingecko.com/coins/images/4001/large/Fantom.png?1558015016';
             break;
           case 'matic-network':
+            coin.decimal = 18;
             coin.name = 'Matic';
             coin.symbol= 'MATIC';
             // coin.network = 'Polygan';
@@ -603,21 +615,61 @@ class WalletController extends GetxController{
     return false;
   }
 
-  sendTransaction({String? receiveAddress, double? amount, String? apiUrl}){
-    SendTransactionUseCase sendTransaction = Get.find();
-    Map<String,dynamic> body = {
-      'receiveAddress':receiveAddress,
-      'amount':amount,
-      'apiUrl':apiUrl
-    };
-    sendTransaction.call(Params(body: body)).then((response){
+  sendTransaction({String? receiveAddress, double? amount,CoinModel? coin}){
+    SendTransactionUseCase sendTransactionUseCase = Get.find();
+    Map<String,dynamic> body;
+    if(coin!.contractAddress!=null){
+      body = {
+        'receiveAddress':receiveAddress,
+        'amount':amount,
+        'apiUrl':coin.jrpcApi![retryCount],
+        'decimal':coin.decimal==null?18:coin.decimal,
+        'contractAddress':coin.contractAddress
+      };
+    }
+    else {
+        body = {
+        'receiveAddress':receiveAddress,
+        'amount':amount,
+        'apiUrl':coin.jrpcApi![retryCount],
+        'decimal':coin.decimal!,
+      };
+    }
+    sendTransactionUseCase.call(Params(body: body)).then((response){
       if(response.isRight){
+        retryCount=0;
+        TransactionInformation transaction = response.right;
+        Fluttertoast.showToast(msg:'The transaction was completed successfully');
+        coin.transactions.add(
+            TransactionModel(
+                txHash: transaction.hash,
+              amount: getValueInUnit(transaction.bigIntValue,coin.decimal!),
+              isSend: true,
+              symbol: coin.symbol,
+              date: DateTime.now().toString()
+            )
+        );
+        saveCoins();
+        Get.back();
         print('TxHash ${response.right}');
       }else if(response.isLeft){
-
+        retryCount++;
+        if(retryCount < coin.jrpcApi!.length-4){
+          sendTransaction(receiveAddress: receiveAddress,amount: amount,coin: coin);
+        }
+        else {
+          Fluttertoast.showToast(msg: 'failed to send transaction');
+        }
       }
     });
+  }
 
+  getTransactions(List<TransactionModel> tx){
+    transactions.clear();
+
+    for(TransactionModel transaction in tx){
+      transactions.add(TransactionWidgetItem(tx: transaction,));
+    }
   }
 
 }

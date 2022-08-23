@@ -1,37 +1,59 @@
 import 'package:dwallet/app/data/models/transaction_model.dart';
 import 'package:dwallet/app/presantation/theme/themes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 
 class TransactionWidgetItem extends StatelessWidget {
   TransactionWidgetItem({Key? key, this.tx}) : super(key: key);
   TransactionModel? tx;
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: Text(tx!.date!),
-            )
-          ],
-        ),
-        Column(
-          children: [
-            TransactionWidget(
-              tx: tx!,
-            )
-          ],
-        ),
-        const Padding(
-          padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
-          child: Divider(
-            thickness: 1.2,
+    return
+      tx==null?Container():
+      InkWell(
+        onTap: (){
+          Clipboard.setData(ClipboardData(text: tx!.txHash));
+          Fluttertoast.showToast(msg: 'transaction hash copied to clipboard');
+        },
+        child: Column(
+        children: [
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Text(tx!.date==null?'':getDateTime(tx!.date!),style: const TextStyle(fontWeight: FontWeight.bold)),
+              )
+            ],
           ),
-        ),
-      ],
-    );
+          TransactionWidget(
+            tx: tx!,
+          ),
+
+          // const Padding(
+          //   padding: EdgeInsets.only(left: 8, right: 8, bottom: 0),
+          //   child: Divider(
+          //     thickness: 1.2,
+          //   ),
+          // ),
+        ],
+    ),
+      );
+  }
+  String getDateTime(String dateTime){
+    DateTime now = DateTime.now();
+    DateTime transactionDateTime = DateTime.parse(dateTime);
+    final difference = now.difference(transactionDateTime).inDays;
+    if(difference == 0){
+      return "Today";
+    }
+    else if(difference == 1){
+      return "Yesterday";
+    }
+    else {
+      return DateFormat.yMMMEd().format(transactionDateTime);
+    }
   }
 }
 
@@ -74,9 +96,13 @@ class TransactionWidget extends StatelessWidget {
                       tx.isSend! ? "Send" : "Receive",
                       style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
-                    Text(
-                      "To: ${tx.txId}",
-                      style: const TextStyle(fontSize: 12),
+                    const SizedBox(height: 16.0,),
+                    SizedBox(
+                      width: 200,
+                      child: Text(
+                        "To: ${tx.txHash}",
+                        style: const TextStyle(fontSize: 12),
+                      ),
                     )
                   ],
                 ),

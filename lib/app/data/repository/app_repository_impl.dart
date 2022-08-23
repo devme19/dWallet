@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:math';
 
 import 'package:dio/dio.dart';
@@ -15,7 +16,7 @@ import 'package:dwallet/app/data/models/verification_model.dart';
 import 'package:dwallet/app/domain/repository/app_repository.dart';
 import 'package:dwallet/app/web3/src/token.dart';
 import 'package:flutter/services.dart';
-
+import 'dart:math' as Math;
 import '../../web3/src/crypto/formatting.dart';
 import '../../web3/web3dart.dart';
 
@@ -153,37 +154,73 @@ class AppRepositoryImpl implements AppRepository {
           ServerFailure(errorMessage: e.toString()));
     }
   }
-
+  EtherAmount getWeiAmount(int decimal, double amount){
+    int decims = amount.toString().split('.')[1].length;
+    BigInt bigIntAmount = BigInt.from(int.parse(amount.toString().replaceAll('.', '')));
+    BigInt bigInt = bigIntAmount * BigInt.from(Math.pow(10, decimal - decims));
+    print(bigInt);
+    print(EtherAmount.inWei(bigInt));
+    return EtherAmount.inWei(bigInt);
+  }
   @override
   Future<Either<Failure, TransactionInformation>> sendTransaction(Map<String,dynamic> body) async{
     try {
+      int retryCount = 0;
+      String txHash='';
+      String? contractAddress;
       String privateKey = localDataSource!.getPrivateKey();
       String apiUrl = body['apiUrl'];
+      int decimal = body['decimal'];
       // String chainId = body['chainId'];
       String receiveAddress = body['receiveAddress'];
+      if(body['contractAddress'] != null) {
+        contractAddress = body['contractAddress'];
+      }
       String sendAddress = localDataSource!.getEthereumAddress();
-      var amount = body['amount'];
+      double amount = body['amount'];
+      // print(bigIntAmount);
       EthPrivateKey credentials = EthPrivateKey.fromHex(privateKey);
-      var s = EtherAmount.fromUnitAndValue(EtherUnit.ether, 1);
-      print(s);
+      // var s = EtherAmount.inWei(bigIntAmount);
+      // print(s);
       EtherAmount gas =await Client().web3(apiUrl).getGasPrice();
       // int gas1 =await Client().web3(apiUrl).estimateGas(sender: EthereumAddress.fromHex(sendAddress),to: );
       BigInt bigIntChainId = await Client().web3(apiUrl).getChainId();
       int chainId = int.parse(bigIntChainId.toString());
      print('gas $gas');
-
-      String txHash = await Client().web3(apiUrl).sendTransaction(
-        chainId: chainId,
-        credentials,
-        Transaction(
-          from: EthereumAddress.fromHex(sendAddress),
-          to: EthereumAddress.fromHex(receiveAddress),
-          gasPrice: gas,
-          maxGas: 100000,
-          value: s,
-        ),
-      );
-      TransactionInformation transaction = await Client().web3(apiUrl).getTransactionByHash(txHash);
+     if(contractAddress != null){
+       String abiCode = await rootBundle.loadString('assets/files/erc20.abi.json');
+       final contract = DeployedContract(ContractAbi.fromJson(abiCode, 'MetaCoin'), EthereumAddress.fromHex(contractAddress));
+       final transfer = contract.function('transfer');
+       await Client().web3(apiUrl).sendTransaction(
+         credentials,
+         chainId:chainId,
+         Transaction.callContract(
+           contract: contract,
+           function: transfer,
+           // gasPrice: gas,
+           // // from: EthereumAddress.fromHex(sendAddress),
+           // maxGas: 100000,
+           // value: getWeiAmount(decimal, amount),
+           parameters: [EthereumAddress.fromHex(receiveAddress), BigInt.parse((amount*Math.pow(10, 18)).round().toString())],
+         ),
+       );
+     }
+    else
+      {
+        txHash = await Client().web3(apiUrl).sendTransaction(
+              chainId: chainId,
+              credentials,
+              Transaction(
+                from: EthereumAddress.fromHex(sendAddress),
+                to: EthereumAddress.fromHex(receiveAddress),
+                gasPrice: gas,
+                maxGas: 100000,
+                value: getWeiAmount(decimal, amount),
+              ),
+            );
+      }
+      TransactionInformation transaction =
+      await Client().web3(apiUrl).getTransactionByHash(txHash!);
       print(transaction);
       return Right(transaction);
     }catch (e) {
@@ -341,4 +378,5 @@ class AppRepositoryImpl implements AppRepository {
       return Left(CacheFailure(message: e.toString()));
     }
   }
+
 }

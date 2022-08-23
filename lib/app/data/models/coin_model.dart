@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:dwallet/app/data/models/coin_historical_data_model.dart';
+import 'package:dwallet/app/data/models/transaction_model.dart';
+import 'package:dwallet/app/web3/web3dart.dart';
 
 class CoinModel {
   String? name;
@@ -8,6 +10,7 @@ class CoinModel {
   String? coingeckoId;
   String? chainId;
   List<String>? jrpcApi;
+  List<TransactionModel> transactions=[];
   // List<String>? jrpcApiTest;
   String? imageUrl;
   double? balance=0;
@@ -20,6 +23,7 @@ class CoinModel {
   double? usd24hVol;
   double? usd24hChange;
   int? lastUpdatedAt;
+  int? decimal;
 
   CoinModel(
       {
@@ -35,7 +39,8 @@ class CoinModel {
         this.usd24hVol,
         this.usd24hChange,
         this.lastUpdatedAt,
-        this.enable = true
+        this.enable = true,
+        this.decimal
       });
   CoinModel.fromJson2(Map<String, dynamic> json) {
     usd = json['usd'];
@@ -44,15 +49,20 @@ class CoinModel {
     usd24hChange = json['usd_24h_change'];
     lastUpdatedAt = json['last_updated_at'];
   }
-  CoinModel.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    symbol = json['symbol'];
-    coingeckoId = json['coingeckoId'];
-    chainId = json['chainId'];
-    jrpcApi = json['jrpcApi'].cast<String>();
+  CoinModel.fromJson(Map<String, dynamic> jsn) {
+    var l = json.decode(jsn['transactions']);
+    // var s = json.decode(jsn['transactions']).map<TransactionInformation>((e) => TransactionInformation.fromMap(e)).toList();
+    name = jsn['name'];
+    symbol = jsn['symbol'];
+    coingeckoId = jsn['coingeckoId'];
+    chainId = jsn['chainId'];
+    jrpcApi = jsn['jrpcApi'].cast<String>();
+    transactions =jsn["transactions"]!= null?decodeTransaction(jsn["transactions"]):[];
     // jrpcApiTest = json['jrpcApiTest'].cast<String>();
-    imageUrl = json['imageUrl'];
-    enable = json['enable'];
+    imageUrl = jsn['imageUrl'];
+    enable = jsn['enable'];
+    decimal = jsn['decimal'];
+    contractAddress = jsn['contractAddress'];
   }
 
   static Map<String, dynamic> toMap(CoinModel coin) =>{
@@ -67,7 +77,10 @@ class CoinModel {
     'usd_24h_vol' : coin.usd24hVol,
     'usd_24h_change' : coin.usd24hChange,
     'last_updated_at' : coin.lastUpdatedAt,
-    'enable':coin.enable
+    'transactions' : encodeTransaction(coin.transactions),
+    'enable':coin.enable,
+    'decimal':coin.decimal,
+    'contractAddress':coin.contractAddress
   };
   static String encode(List<CoinModel> coins) => json.encode(
     coins
@@ -77,5 +90,14 @@ class CoinModel {
   static List<CoinModel> decode(String coins) =>
       (json.decode(coins) as List<dynamic>)
           .map<CoinModel>((item) => CoinModel.fromJson(item))
+          .toList();
+  static String encodeTransaction(List<TransactionModel> transactions) => json.encode(
+    transactions
+        .map<Map<String, dynamic>>((transaction) => TransactionModel.toMap(transaction))
+        .toList(),
+  );
+  static List<TransactionModel> decodeTransaction(String transactions) =>
+      (json.decode(transactions) as List<dynamic>)
+          .map<TransactionModel>((item) => TransactionModel.fromMap(item))
           .toList();
 }

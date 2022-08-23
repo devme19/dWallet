@@ -1,12 +1,27 @@
 class TransactionModel {
-  String? date, txId, symbol;
+  String? date, txHash, symbol;
 
   double? amount;
   bool? isSend;
   TransactionModel(
-      {required this.date,
-      required this.txId,
-      required this.isSend,
-      required this.amount,
-      required this.symbol});
+      { this.date,
+       this.txHash,
+       this.isSend,
+       this.amount,
+       this.symbol});
+  TransactionModel.fromMap(Map<String,dynamic> map){
+    date = map["date"];
+    txHash = map["txHash"];
+    symbol = map["symbol"];
+    amount = map["amount"];
+    isSend = map["isSend"];
+  }
+  static Map<String, dynamic> toMap(TransactionModel transaction)=>{
+    'date' : transaction.date,
+    'txHash' :transaction.txHash,
+    'symbol' : transaction.symbol,
+    'amount' : transaction.amount,
+    'isSend' : transaction.isSend,
+
+  };
 }

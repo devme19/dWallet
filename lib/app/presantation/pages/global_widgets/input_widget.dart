@@ -18,10 +18,28 @@ class InputWidget extends StatelessWidget {
           border: Border.all(color: IColor().DARK_TEXT_COLOR.withOpacity(0.4)),
           borderRadius: BorderRadius.circular(10),
           color: Colors.transparent),
-      child: TextField(
+      child: TextFormField(
         keyboardType:isNumberMode? TextInputType.number:TextInputType.text,
         // ignore: curly_braces_in_flow_control_structures
-        onSubmitted: (value) {
+        validator: (value){
+          if(hint == "Recipient Address"){
+            if(value!.isEmpty){
+              return "enter recipient address";
+            }
+            else {
+              return null;
+            }
+          }else if(hint == "Amount"){
+            if(value!.isEmpty){
+              return "enter amount";
+            }
+            else {
+              return null;
+            }
+          }
+
+        },
+        onFieldSubmitted: (value) {
           if(onSubmit != null) {
             onSubmit!(value);
           }
