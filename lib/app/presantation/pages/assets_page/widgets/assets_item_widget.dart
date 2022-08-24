@@ -56,7 +56,7 @@ class _AssetsItemWidgetState extends State<AssetsItemWidget> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(top: 6),
-                      child: Text(widget.coin!.usd!.toString()),
+                      child: Text(widget.coin!.usd!=null?widget.coin!.usd!.toString():''),
                     )
                   ],
                 ),

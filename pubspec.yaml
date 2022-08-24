@@ -48,6 +48,7 @@ dependencies:
   animated_text_kit: ^4.2.2
   qr_flutter: ^4.0.0
   share_plus: ^4.0.10+1
+  url_launcher: ^6.1.5
 
 
 dev_dependencies:

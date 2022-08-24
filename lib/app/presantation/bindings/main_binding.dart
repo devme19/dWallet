@@ -18,6 +18,7 @@ import '../../data/data_sources/remote/remote_data_source.dart';
 import '../../data/repository/app_repository_impl.dart';
 import '../../domain/repository/app_repository.dart';
 import '../../domain/use_cases/home/get_coins_from_local_usecase.dart';
+import '../../domain/use_cases/home/get_gas_usecase.dart';
 import '../../domain/use_cases/home/get_token_info_by_contract_address_usecase.dart';
 import '../../domain/use_cases/home/get_token_decimal_usecase.dart';
 import '../../domain/use_cases/home/get_token_symbol_usecase.dart';
@@ -69,6 +70,8 @@ class MainBinding extends Bindings {
         SendTransactionUseCase(repository: Get.find<AppRepository>()));
     Get.put<GetTokenMarketInfoUseCase>(
         GetTokenMarketInfoUseCase(repository: Get.find<AppRepository>()));
+    Get.put<GetGasUseCase>(
+        GetGasUseCase(repository: Get.find<AppRepository>()));
     Get.put<WalletController>(WalletController());
 
   }

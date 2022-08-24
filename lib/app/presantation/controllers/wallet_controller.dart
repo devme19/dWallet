@@ -1,4 +1,5 @@
 import 'package:dwallet/app/core/either.dart';
+import 'package:dwallet/app/core/failures.dart';
 import 'package:dwallet/app/core/use_case.dart';
 import 'package:dwallet/app/data/models/coin_historical_data_model.dart';
 import 'package:dwallet/app/data/models/coin_info_model.dart';
@@ -10,6 +11,7 @@ import 'package:dwallet/app/domain/use_cases/home/get_balance_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_coins_from_local_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_coins_info_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_eth_address_usecase.dart';
+import 'package:dwallet/app/domain/use_cases/home/get_gas_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_historical_data_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_token_balance_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_token_decimal_usecase.dart';
@@ -69,6 +71,7 @@ class WalletController extends GetxController{
   RxString ethAddress = ''.obs;
   RxList transactions=[].obs;
   int retryCount=0;
+  RxString gas = ''.obs;
   @override
   void onInit() {
     super.onInit();
@@ -240,6 +243,7 @@ class WalletController extends GetxController{
         }
         tokenToAdd = CoinModel(
             name: token.name,
+            decimal: int.parse(tokenDecimal.value),
             symbol: token.symbol,
             imageUrl: imageUrl,
             jrpcApi: selectedNetwork!.apiUrls,
@@ -263,6 +267,7 @@ class WalletController extends GetxController{
               imageUrl: "",
               jrpcApi: selectedNetwork!.apiUrls,
               coingeckoId: "",
+              decimal: int.parse(tokenDecimal.value),
               contractAddress: contractAddress);
           coins.add(tokenToAdd!);
           getTokenBalance(tokenToAdd!.contractAddress!,coins.last,coins.last.jrpcApi![0]);
@@ -280,7 +285,7 @@ class WalletController extends GetxController{
     )).then((response) {
       if(response.isRight){
         token.balance = getValueInUnit(response.right, int.parse(tokenDecimal.value));
-        Get.snackbar("Result", token.balance.toString());
+        // Get.snackbar("Result", token.balance.toString());
         update();
       }else if(response.isLeft){
 
@@ -653,13 +658,20 @@ class WalletController extends GetxController{
         Get.back();
         print('TxHash ${response.right}');
       }else if(response.isLeft){
-        retryCount++;
-        if(retryCount < coin.jrpcApi!.length-4){
-          sendTransaction(receiveAddress: receiveAddress,amount: amount,coin: coin);
+        ServerFailure failure = response.left as ServerFailure;
+        if(failure.errorMessage!.toLowerCase().contains("insufficient funds for gas")){
+          Fluttertoast.showToast(msg: "insufficient funds for gas");
         }
-        else {
-          Fluttertoast.showToast(msg: 'failed to send transaction');
+        else{
+          retryCount++;
+          if(retryCount < coin.jrpcApi!.length-4){
+            sendTransaction(receiveAddress: receiveAddress,amount: amount,coin: coin);
+          }
+          else {
+            Fluttertoast.showToast(msg: 'failed to send transaction');
+          }
         }
+
       }
     });
   }
@@ -670,6 +682,18 @@ class WalletController extends GetxController{
     for(TransactionModel transaction in tx){
       transactions.add(TransactionWidgetItem(tx: transaction,));
     }
+  }
+  getGas(String url,CoinModel coin){
+    GetGasUseCase getGasUseCase = Get.find();
+    getGasUseCase.call(Params(apiUrl: url)).then((response) {
+      // if(response.isRight){
+      //   EtherAmount.fromUnitAndValue(unit, amount)
+      //   BigInt value = BigInt.from(10).pow(coin.decimal!)*response.right;
+      //   getValueInUnit(transaction.bigIntValue,coin.decimal!);
+      // }else if(response.isLeft){
+      //
+      // }
+    });
   }
 
 }

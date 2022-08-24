@@ -220,7 +220,7 @@ class AppRepositoryImpl implements AppRepository {
             );
       }
       TransactionInformation transaction =
-      await Client().web3(apiUrl).getTransactionByHash(txHash!);
+      await Client().web3(apiUrl).getTransactionByHash(txHash);
       print(transaction);
       return Right(transaction);
     }catch (e) {
@@ -310,6 +310,7 @@ class AppRepositoryImpl implements AppRepository {
     try {
       Either response = await getEthAddress();
       if(response.isRight){
+
       }else if(response.isLeft){
 
       }
@@ -374,6 +375,16 @@ class AppRepositoryImpl implements AppRepository {
       Response response = await remoteDataSource!.get(url: 'coins/$id',queryParameters: parameters);
       CoinInfoModel coinInfo = CoinInfoModel.fromJson(response.data);
       return Right(coinInfo);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, EtherAmount>> getGas(String url) async{
+    try {
+      EtherAmount gas =await Client().web3(url).getGasPrice();
+      return Right(gas);
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.toString()));
     }

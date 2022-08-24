@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../controllers/wallet_controller.dart';
 class CoinInfoPage extends GetView<WalletController> {
@@ -153,8 +154,21 @@ class CoinInfoPage extends GetView<WalletController> {
               const Divider(height: 15,),
               Column(
                 children: [
-                  item(title: 'Website',value: controller.coinInfo.value.links!=null?controller.coinInfo.value.links!.homepage![0]:"",hasIcon: true),
-                  item(title: 'Explorer',value: controller.coinInfo.value.links!=null?controller.coinInfo.value.links!.blockChainSites![0]:"",hasIcon: true),
+                  InkWell(
+                    onTap: (){
+                      if(controller.coinInfo.value.links!=null){
+                        launchUrl(Uri.parse(controller.coinInfo.value.links!.homepage![0]));
+                      }
+
+                    },
+                      child: item(title: 'Website',value: controller.coinInfo.value.links!=null?controller.coinInfo.value.links!.homepage![0]:"",hasIcon: true)),
+                  InkWell(
+                    onTap: (){
+                      if(controller.coinInfo.value.links!=null){
+                        launchUrl(Uri.parse(controller.coinInfo.value.links!.blockChainSites![0]));
+                      }
+                    },
+                      child: item(title: 'Explorer',value: controller.coinInfo.value.links!=null?controller.coinInfo.value.links!.blockChainSites![0]:"",hasIcon: true)),
                   const SizedBox(height: 16.0),
                   item(title: 'Market Cap',value:controller.coinInfo.value.marketData!= null? '\$${f.format(controller.coinInfo.value.marketData!.totalSupply)}':'',),
                   item(title: 'Volume(24h)',value: '\$${f.format(878854)}'),

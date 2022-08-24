@@ -37,4 +37,5 @@ abstract class AppRepository {
   Future<Either<Failure, List<CoinModel>>> getCoinsFromLocal();
   Future<Either<Failure, bool>> saveCoinsToLocal(String coins);
   Future<Either<Failure, CoinInfoModel>> getTokenMarketInfo(Map<String,dynamic> parameters,String id);
+  Future<Either<Failure, EtherAmount>> getGas(String url);
 }
