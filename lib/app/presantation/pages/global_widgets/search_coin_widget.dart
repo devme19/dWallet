@@ -1,4 +1,5 @@
 import 'package:dwallet/app/data/models/coin_model.dart';
+import 'package:dwallet/app/presantation/controllers/setting_controller.dart';
 import 'package:dwallet/app/presantation/pages/global_widgets/search_item_widget.dart';
 import 'package:dwallet/app/presantation/theme/themes.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import '../../controllers/wallet_controller.dart';
 class SearchCoinWidget extends GetView<WalletController> {
   SearchCoinWidget({Key? key, required this.title,this.selectedCoin}) : super(key: key);
   String? title;
+  SettingController settingController = Get.find();
   ValueChanged<CoinModel>? selectedCoin;
   List<CoinModel> _filterCoinsList(String searchTerm) {
     return controller.coins
@@ -23,7 +25,7 @@ class SearchCoinWidget extends GetView<WalletController> {
     final size = MediaQuery.of(context).size;
     return Container(
       decoration: BoxDecoration(
-          color: IColor().DARK_BG_COLOR,
+          color: settingController.isDark.value? IColor().DARK_HOME_LIST_BG_COLOR:IColor().LIGHT_HOME_LIST_BG_COLOR,
           borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(30), topRight: Radius.circular(30))),
       alignment: Alignment.bottomCenter,
@@ -38,7 +40,7 @@ class SearchCoinWidget extends GetView<WalletController> {
             height: 5,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(6),
-                color: IColor().DARK_TEXT_COLOR),
+                color: settingController.isDark.value?Colors.white54:Colors.black54),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -54,7 +56,7 @@ class SearchCoinWidget extends GetView<WalletController> {
                       child: Text(
                         "Cancel",
                         style: TextStyle(
-                            fontSize: 20, color: IColor().DARK_PRIMARY_COLOR),
+                            fontSize: 20, color: Get.theme.primaryColor),
                       ),
                     ),
                   ),
@@ -65,7 +67,6 @@ class SearchCoinWidget extends GetView<WalletController> {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontSize: 20,
-                        color: IColor().DARK_TEXT_COLOR,
                         fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -87,18 +88,20 @@ class SearchCoinWidget extends GetView<WalletController> {
                   selectedCoin!(item);
                 },
                 inputDecoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
                     filled: true,
-                    hintStyle: TextStyle(
-                      fontSize: 18,
-                      color: Colors.grey.withOpacity(0.6),
-                    ),
+                    // prefix: Icon(Icons.search),
+                    fillColor: settingController.isDark.value?Color(0xff2C2C2E):Color(0xffE0E0E6),
+                    hintText: 'Search',
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        borderSide:BorderSide.none
 
-                    fillColor:  IColor().DARK_BUTTOM_COLOR.withOpacity(0.1),
-                    hintText: "Search"),
+                    ),
+                    border:OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        borderSide:BorderSide.none
+                    )
+                ),
                     scrollDirection: Axis.vertical,
               ),
             ),

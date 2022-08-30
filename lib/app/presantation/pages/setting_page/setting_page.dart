@@ -14,7 +14,8 @@ class SettingPage extends GetView<SettingController> {
           () => Column(
             children: [
               InkWell(
-                onTap: () => controller.toggleTheme(),
+                onTap: () =>
+                    controller.toggleTheme(),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Row(

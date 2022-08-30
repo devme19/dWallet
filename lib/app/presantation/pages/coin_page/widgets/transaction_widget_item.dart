@@ -1,13 +1,15 @@
 import 'package:dwallet/app/data/models/transaction_model.dart';
+import 'package:dwallet/app/presantation/controllers/setting_controller.dart';
 import 'package:dwallet/app/presantation/theme/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-
+import 'package:get/get.dart';
 class TransactionWidgetItem extends StatelessWidget {
   TransactionWidgetItem({Key? key, this.tx}) : super(key: key);
   TransactionModel? tx;
+
   @override
   Widget build(BuildContext context) {
     return
@@ -61,15 +63,16 @@ class TransactionWidget extends StatelessWidget {
   TransactionWidget({Key? key, required this.tx}) : super(key: key);
 
   TransactionModel tx;
-
+  SettingController settingController = Get.find();
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.only(bottom: 10.0,top: 6.0),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          color: IColor().DARK_BUTTOM_COLOR.withOpacity(0.1)),
+          color: settingController.isDark.value? IColor().DARK_TOKEN_WIDGET_COLOR:IColor().LIGHT_TOKEN_WIDGET_COLOR,),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -81,12 +84,12 @@ class TransactionWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border:
-                        Border.all(width: 1, color: IColor().DARK_TEXT_COLOR),
+                        Border.all(width: 1, color: settingController.isDark.value?Colors.white:Colors.black),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(2),
                     child: Icon(
-                        tx.isSend! ? Icons.arrow_upward : Icons.arrow_downward),
+                        tx.isSend! ? Icons.arrow_upward : Icons.arrow_downward,color: Get.theme.primaryColor),
                   ),
                 ),
                 Column(
@@ -96,7 +99,7 @@ class TransactionWidget extends StatelessWidget {
                       tx.isSend! ? "Send" : "Receive",
                       style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
-                    const SizedBox(height: 16.0,),
+                    const SizedBox(height: 8.0,),
                     SizedBox(
                       width: 200,
                       child: Text(

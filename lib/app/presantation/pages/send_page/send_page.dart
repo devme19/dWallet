@@ -1,4 +1,5 @@
 import 'package:dwallet/app/data/models/coin_model.dart';
+import 'package:dwallet/app/presantation/controllers/setting_controller.dart';
 import 'package:dwallet/app/presantation/controllers/wallet_controller.dart';
 import 'package:dwallet/app/presantation/pages/global_widgets/input_widget.dart';
 import 'package:dwallet/app/presantation/theme/themes.dart';
@@ -11,13 +12,16 @@ class SendPage extends GetView<WalletController> {
     Key? key,
     this.coin,
     this.onBack
-  }) : super(key: key);
+  }) : super(key: key){
+    controller.usdValue.value ="";
+  }
   CoinModel? coin;
   ValueChanged<TransactionInformation>? onBack;
   TextEditingController amountController = TextEditingController();
   TextEditingController recipientController = TextEditingController();
   String usdValue="0";
   final _formKey = GlobalKey<FormState>();
+  SettingController settingController = Get.find();
   bool isNumeric(String s) {
     if (s.isEmpty) {
       return false;
@@ -40,7 +44,7 @@ class SendPage extends GetView<WalletController> {
           padding: EdgeInsets.symmetric(horizontal: size.width * 0.033),
           height: size.height * 0.8,
           decoration: BoxDecoration(
-              color: IColor().DARK_BG_COLOR,
+              color: settingController.isDark.value? IColor().DARK_HOME_LIST_BG_COLOR:IColor().LIGHT_HOME_LIST_BG_COLOR,
               borderRadius: const BorderRadius.vertical(top: Radius.circular(30))),
           child: Column(
             // crossAxisAlignment: CrossAxisAlignment.center,
@@ -55,7 +59,7 @@ class SendPage extends GetView<WalletController> {
                       height: 5,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(6),
-                          color: IColor().DARK_TEXT_COLOR),
+                          color: settingController.isDark.value?Colors.white54:Colors.black54),
                     ),
                     Row(
                       children: [
@@ -69,7 +73,7 @@ class SendPage extends GetView<WalletController> {
                               child: Text(
                                 "Cancel",
                                 style: TextStyle(
-                                    fontSize: 18, color: IColor().DARK_PRIMARY_COLOR),
+                                    fontSize: 18, color: Get.theme.primaryColor),
                               ),
                             ),
                           ),
@@ -81,7 +85,6 @@ class SendPage extends GetView<WalletController> {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: 18,
-                                color: IColor().DARK_TEXT_COLOR,
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -105,27 +108,25 @@ class SendPage extends GetView<WalletController> {
                             }
                           },
                           child: Container(
-                            width: 65,
-                            height: 65,
                             margin: const EdgeInsets.only(left: 10),
                             padding: const EdgeInsets.all(18),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(16),
-                                color: IColor().DARK_BUTTOM_COLOR.withOpacity(0.1)),
-                            child: Image.asset("assets/images/icons/paste.png"),
+                                border: Border.all(color:settingController.isDark.value?Color(0xff636366): Color(0xff636366)),
+                                color:settingController.isDark.value?Color(0xff2C2C2E): Color(0xffE0E0E5)),
+                            child: Image.asset("assets/images/icons/paste.png",height: 20,width: 20,color:Get.theme.primaryColor),
                           ),
                         ),
                         InkWell(
                           onTap: () {},
                           child: Container(
-                            width: 65,
-                            height: 65,
                             margin: const EdgeInsets.only(left: 10),
                             padding: const EdgeInsets.all(18),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(16),
-                                color: IColor().DARK_BUTTOM_COLOR.withOpacity(0.1)),
-                            child: Image.asset("assets/images/icons/scan.png"),
+                                border: Border.all(color:settingController.isDark.value?Color(0xff636366): Color(0xff636366)),
+                                color:settingController.isDark.value?Color(0xff2C2C2E): Color(0xffE0E0E5)),
+                            child: Image.asset("assets/images/icons/scan.png",height: 20,width: 20,color:Get.theme.primaryColor),
                           ),
                         )
                       ],
@@ -145,21 +146,22 @@ class SendPage extends GetView<WalletController> {
                               onAmountChange(amountController.text);
                             },
                             child: Container(
-                              width: 65,
-                              height: 65,
+                              width: 60,
+                              height: 60,
                               alignment: Alignment.center,
                               margin: const EdgeInsets.only(left: 10),
                               padding: const EdgeInsets.symmetric(horizontal: 12),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(16),
-                                  color: IColor()
-                                      .DARK_BUTTOM_COLOR
-                                      .withOpacity(0.1)),
-                              child: Text(
-                                "MAX",
-                                style: TextStyle(
-                                    color: IColor().DARK_PRIMARY_COLOR,
-                                    fontWeight: FontWeight.bold),
+                                  border: Border.all(color:settingController.isDark.value?Color(0xff636366): Color(0xff636366)),
+                                  color:settingController.isDark.value?Color(0xff2C2C2E): Color(0xffE0E0E5)),
+                              child: FittedBox(
+                                child: Text(
+                                  "MAX",
+                                  style: TextStyle(
+                                      color: Get.theme.primaryColor,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               ),
                             ),
                           ),
@@ -173,7 +175,7 @@ class SendPage extends GetView<WalletController> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text('\$${controller.usdValue.value}'),
+                          child: Text(controller.usdValue.value!=''?'\$${controller.usdValue.value}':''),
                         ),
                       ],
                     )
@@ -187,7 +189,8 @@ class SendPage extends GetView<WalletController> {
                     padding: const EdgeInsets.all(15),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        color: IColor().DARK_BUTTOM_COLOR.withOpacity(0.1)),
+                      color: settingController.isDark.value? IColor().DARK_TOKEN_WIDGET_COLOR:IColor().LIGHT_TOKEN_WIDGET_COLOR,),
+
                     child: Column(
                       children: const [
                         Text(
@@ -210,6 +213,7 @@ class SendPage extends GetView<WalletController> {
                     children: [
                       Expanded(
                           child: ElevatedButton(
+                            style:settingController.isDark.value? Themes.dark.elevatedButtonTheme.style:Themes.light.elevatedButtonTheme.style,
                               onPressed: () {
                                 if(_formKey.currentState!.validate()){
                                   controller.retryCount = 0;

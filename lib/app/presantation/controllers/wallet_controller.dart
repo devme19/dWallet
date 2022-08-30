@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:dwallet/app/core/either.dart';
 import 'package:dwallet/app/core/failures.dart';
 import 'package:dwallet/app/core/use_case.dart';
@@ -30,6 +31,7 @@ import 'package:dwallet/app/presantation/routes/app_routes.dart';
 import 'package:dwallet/app/presantation/utils/state_status.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:bip39/bip39.dart' as bip39;
@@ -72,6 +74,7 @@ class WalletController extends GetxController{
   RxList transactions=[].obs;
   int retryCount=0;
   RxString gas = ''.obs;
+  CoinModel selectedCoin =CoinModel();
   @override
   void onInit() {
     super.onInit();
@@ -108,7 +111,7 @@ class WalletController extends GetxController{
       'https://bsc-dataseed3.defibit.io'
     ],
         assetPlatform: "binance-smart-chain",
-        imageUrl: 'https://assets.coingecko.com/coins/images/17271/large/icon_200px_16bit.png'
+        imageUrl: 'https://assets.coingecko.com/coins/images/825/large/bnb-icon2_2x.png'
     ));
     networks.add(NetworkModel(name: "Polygan",apiUrls: [
       'https://rpc-mainnet.matic.quiknode.pro',
@@ -339,8 +342,6 @@ class WalletController extends GetxController{
     wallet= await compute(Wallet.fromMnemonic,secretPhrase.value);
     savePrivateKey();
     saveEthereumAddress();
-
-
   }
   double getValueInUnit(BigInt value,int decimal) {
     final factor = BigInt.from(10).pow(decimal);
@@ -351,6 +352,7 @@ class WalletController extends GetxController{
   }
   importWallet(String secretPhrase)async{
     try{
+      showDialog("Initializing wallet ...");
       wallet= await compute(Wallet.fromMnemonic,secretPhrase);
       savePrivateKey();
       saveEthereumAddress();
@@ -363,6 +365,41 @@ class WalletController extends GetxController{
 
     }
 
+  }
+  showDialog(String title){
+    Get.dialog(
+        Scaffold(
+          backgroundColor: Colors.grey.withOpacity(0.2),
+          body: Container(
+
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SpinKitFadingCube(color: Get.theme.primaryColor),
+                  SizedBox(height: 40.0,),
+                  SizedBox(
+                    height: 40,
+                    child:AnimatedTextKit(
+
+                      animatedTexts: [
+                        WavyAnimatedText(title,textStyle: TextStyle(fontWeight: FontWeight.bold,color: Get.theme.primaryColor)),
+                      ],
+                      isRepeatingAnimation: true,
+                    ),
+                    // child: TextLiquidFill(
+                    //   text: 'Initializing wallet ...',
+                    //   loadDuration: Duration(seconds: 2),
+                    //   waveColor: Get.theme.primaryColor,
+                    //   // boxBackgroundColor: Colors.redAccent,
+                    //   textStyle: TextStyle(
+                    //     fontSize: 15.0,
+                    //     fontWeight: FontWeight.bold,
+                    //   ),),
+                  )]
+            ),
+          ),
+        )
+    );
   }
   getBalance(String url,CoinModel coin)async{
     GetBalanceUseCase getBalanceUseCase  = Get.find();
@@ -493,7 +530,7 @@ class WalletController extends GetxController{
               'https://data-seed-prebsc-1-s2.binance.org:8545',
               'https://data-seed-prebsc-2-s2.binance.org:8545',
               'https://data-seed-prebsc-2-s3.binance.org:8545'];
-            coin.imageUrl = 'https://assets.coingecko.com/coins/images/17271/large/icon_200px_16bit.png';
+            coin.imageUrl = 'https://assets.coingecko.com/coins/images/825/large/bnb-icon2_2x.png';
             break;
           case 'fantom':
             coin.decimal = 18;
@@ -621,6 +658,7 @@ class WalletController extends GetxController{
   }
 
   sendTransaction({String? receiveAddress, double? amount,CoinModel? coin}){
+    showDialog("Sending...");
     SendTransactionUseCase sendTransactionUseCase = Get.find();
     Map<String,dynamic> body;
     if(coin!.contractAddress!=null){
@@ -642,6 +680,7 @@ class WalletController extends GetxController{
     }
     sendTransactionUseCase.call(Params(body: body)).then((response){
       if(response.isRight){
+        Get.back();
         retryCount=0;
         TransactionInformation transaction = response.right;
         Fluttertoast.showToast(msg:'The transaction was completed successfully');

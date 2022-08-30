@@ -1,8 +1,11 @@
 import 'package:dwallet/app/data/models/coin_model.dart';
+import 'package:dwallet/app/presantation/controllers/setting_controller.dart';
 import 'package:dwallet/app/presantation/theme/themes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SearchItemWidget extends StatelessWidget {
+  SettingController settingController = Get.find();
   SearchItemWidget({
     Key? key,
     this.coin
@@ -15,7 +18,7 @@ class SearchItemWidget extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 5),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: IColor().DARK_BUTTOM_COLOR.withOpacity(0.1)),
+        color: settingController.isDark.value? IColor().DARK_TOKEN_WIDGET_COLOR:IColor().LIGHT_TOKEN_WIDGET_COLOR,),
       height: size.height * 0.12,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -72,13 +75,12 @@ class SearchItemWidget extends StatelessWidget {
                   children: [
                     Text(
                      coin!.balance!.toStringAsFixed(2),
-                      style: TextStyle(color: IColor().DARK_TEXT_COLOR.withOpacity(0.8)),
                     ),
                     const SizedBox(width: 8.0,),
                     Text(
                       coin!.symbol!,
                       style: TextStyle(
-                          fontSize: 16,color:IColor().DARK_TEXT_COLOR.withOpacity(0.8)),
+                          fontSize: 16,),
                     ),
                   ],
                 )

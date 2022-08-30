@@ -1,4 +1,5 @@
 import 'package:dwallet/app/data/models/network_model.dart';
+import 'package:dwallet/app/presantation/controllers/setting_controller.dart';
 import 'package:dwallet/app/presantation/pages/add_custom_token_page/widget/network_item_widget.dart';
 import 'package:dwallet/app/presantation/theme/themes.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,8 @@ class ChooseNetworkPage extends StatefulWidget {
 }
 
 class _ChooseNetworkPageState extends State<ChooseNetworkPage> {
+
+  SettingController settingController = Get.find();
   List<NetworkModel> _filterNetworkList(String searchTerm) {
     return widget.networks!
         .where(
@@ -40,7 +43,7 @@ class _ChooseNetworkPageState extends State<ChooseNetworkPage> {
         padding: EdgeInsets.all(16.0),
         height: Get.height * 0.8,
         decoration: BoxDecoration(
-            color: Get.theme.backgroundColor,
+            color: settingController.isDark.value? IColor().DARK_HOME_LIST_BG_COLOR:IColor().LIGHT_HOME_LIST_BG_COLOR,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(30))),
         child:
         Column(
@@ -58,16 +61,20 @@ class _ChooseNetworkPageState extends State<ChooseNetworkPage> {
                 emptyWidget:  const Padding(padding: EdgeInsets.all(16.0),child: Center(child: Text("No Item")),),
                 onItemSelected: (NetworkModel item) {},
                 inputDecoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16.0),
-                    ),
                     filled: true,
-                    hintStyle: TextStyle(
-                      fontSize: 18,
-                      color: Colors.grey.withOpacity(0.6),
+                    // prefix: Icon(Icons.search),
+                    fillColor: settingController.isDark.value?Color(0xff2C2C2E):Color(0xffE0E0E6),
+                    hintText: 'Search',
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        borderSide:BorderSide.none
+
                     ),
-                    fillColor:  IColor().DARK_BUTTOM_COLOR.withOpacity(0.1),
-                    hintText: "Search"),
+                    border:OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        borderSide:BorderSide.none
+                    )
+                ),
                 scrollDirection: Axis.vertical,
               ),
             ),

@@ -2,6 +2,9 @@ import 'package:dwallet/app/data/models/coin_model.dart';
 import 'package:dwallet/app/data/models/network_model.dart';
 import 'package:dwallet/app/presantation/theme/themes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../../../controllers/setting_controller.dart';
 class NetworkItemWidget extends StatelessWidget {
   NetworkItemWidget({
     Key? key,
@@ -12,7 +15,7 @@ class NetworkItemWidget extends StatelessWidget {
   NetworkModel? network;
   ValueChanged<NetworkModel>? selectedNetwork;
   String? networkStr;
-
+  SettingController settingController = Get.find();
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -25,7 +28,7 @@ class NetworkItemWidget extends StatelessWidget {
           margin: const EdgeInsets.symmetric(vertical: 5),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: IColor().DARK_BUTTOM_COLOR.withOpacity(0.1)),
+            color: settingController.isDark.value? IColor().DARK_TOKEN_WIDGET_COLOR:IColor().LIGHT_TOKEN_WIDGET_COLOR,),
           height: size.height * 0.11,
           child: Padding(
             padding: const EdgeInsets.all(10),
@@ -59,10 +62,10 @@ class NetworkItemWidget extends StatelessWidget {
                   scale: 1.8,
                   child: Checkbox(
                       side: const BorderSide(
-                          width: 0.5,
+                          width: 0,
                           color: Colors.transparent),
                       tristate: false,
-                      activeColor: IColor().Dark_CHECK_COLOR.withOpacity(0.1),
+                      activeColor: Colors.transparent,
                       checkColor: IColor().Dark_CHECK_COLOR,
                       splashRadius: 10,
                       value: networkStr == network!.name!,

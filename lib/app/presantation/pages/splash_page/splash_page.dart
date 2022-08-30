@@ -1,5 +1,7 @@
 import 'package:dwallet/app/presantation/controllers/splash_page_controller.dart';
+import 'package:dwallet/app/presantation/pages/global_widgets/bg_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
 class SplashPage extends GetView<SplashPageController> {
@@ -10,10 +12,11 @@ class SplashPage extends GetView<SplashPageController> {
 
   @override
   Widget build(BuildContext context) {
-    return const SafeArea(
+    return SafeArea(
       child: Scaffold(
           body: Center(
-            child:CircularProgressIndicator()
+            child:
+            BgWidget(child: SpinKitFadingCube(color: Get.theme.primaryColor)),
           )),
     );
   }
