@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SecretPhraseLength extends StatelessWidget {
   int? length;
@@ -15,16 +16,16 @@ class SecretPhraseLength extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 40,
-      width: 40,
+      height: 60,
+      width: 60,
       child: Text(
         length.toString(),
         style: TextStyle(
             color: lengthCOlor!, fontWeight: FontWeight.bold, fontSize: 16),
       ),
       decoration: BoxDecoration(
-        border: Border.all(width: 1, color: lengthCOlor!),
-        borderRadius: BorderRadius.circular(20),
+        border: Border.all(width: 1, color: Get.isDarkMode?Colors.white:Colors.black),
+        shape: BoxShape.circle,
         color: fillColor,
       ),
       alignment: Alignment.center,

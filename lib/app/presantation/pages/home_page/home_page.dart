@@ -30,13 +30,13 @@ class HomePage extends GetView<WalletController> {
         Scaffold(
             backgroundColor: Colors.transparent,
             body:
-            LiquidPullToRefresh(
+            Obx(()=>LiquidPullToRefresh(
                 showChildOpacityTransition: false,
-                color: Themes.dark.primaryColor,
+                color:settingController.isDark.value? Themes.dark.primaryColor:Themes.light.primaryColor,
                 springAnimationDurationInMilliseconds: 300,
                 height: 60,
                 onRefresh: onRefresh,
-                child: BgWidget(child: body()))
+                child: BgWidget(child: body())))
         ),
       );
   }
@@ -48,7 +48,8 @@ class HomePage extends GetView<WalletController> {
       return
         CustomScrollView(
           slivers: [
-            Obx(()=>SliverAppBar(
+
+                SliverAppBar(
               backgroundColor:Colors.transparent,
               expandedHeight: 250.0,
               floating: false,
@@ -199,10 +200,11 @@ class HomePage extends GetView<WalletController> {
                       // )
                     );
                   }),
-            )),
+            ),
             SliverToBoxAdapter(
                 child:
-                Obx(()=>Container(
+
+                    Container(
                   padding: const EdgeInsets.only(bottom: 20.0,right: 8.0,left: 8.0),
                   // margin: const EdgeInsets.only(bottom: 16),
                   decoration: BoxDecoration(
@@ -336,7 +338,7 @@ class HomePage extends GetView<WalletController> {
                       ),
                     ),
                   ],),
-                ))),
+                )),
       // GetBuilder<WalletController>(builder: (walletController){
       //   return SliverToBoxAdapter(
       //     child:

@@ -35,7 +35,7 @@ class App {
     ),
     GetPage(
       name: AppRoutes.introPage,
-      page: () => const IntroPage(),
+      page: () => IntroPage(),
     ),
     GetPage(
       name: AppRoutes.homePage,

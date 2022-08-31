@@ -1,3 +1,4 @@
+import 'package:dwallet/app/presantation/controllers/setting_controller.dart';
 import 'package:dwallet/app/presantation/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,8 +9,7 @@ import 'package:dwallet/app/presantation/theme/themes.dart';
 import '../../utils/globals.dart';
 
 class IntroPage extends StatelessWidget{
-  const IntroPage({Key? key}) : super(key: key);
-
+  IntroPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return
@@ -37,6 +37,7 @@ class IntroPage extends StatelessWidget{
                         children: [
                           Expanded(
                             child: ElevatedButton(
+                              style:Get.isDarkMode? Themes.dark.elevatedButtonTheme.style:Themes.light.elevatedButtonTheme.style,
                               onPressed: () => Get.toNamed(AppRoutes.agreementPage),
                               child: const Text("Create a new wallet"),
                             ),
@@ -57,7 +58,7 @@ class IntroPage extends StatelessWidget{
                                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                                     child: Text(
                                       "I already have a wallet",
-                                      style: Themes.dark.textTheme.subtitle2,
+                                      style: TextStyle(fontSize: 18,color: Get.theme.primaryColor),
                                     ),
                                   ),
                                 ),

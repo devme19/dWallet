@@ -115,6 +115,7 @@ class _AgreementPageState extends State<AgreementPage> {
             children: [
               Expanded(
                   child: ElevatedButton(
+                      style:Get.isDarkMode? Themes.dark.elevatedButtonTheme.style:Themes.light.elevatedButtonTheme.style,
                       onPressed: enableButton!
                           ? () {
                         Get.toNamed(AppRoutes.secretPhrasePage);

@@ -62,7 +62,7 @@ class SecretPhrasePage extends GetView<WalletController> {
                               'Secret phrases have been copied',
                               '',
                               snackPosition: SnackPosition.BOTTOM,
-                              backgroundColor: Colors.black87
+                              backgroundColor:Get.isDarkMode? Colors.black87:Colors.white38
                           );
                           // Fluttertoast.showToast(
                           //     msg: "Secret phrases have been copied",
@@ -74,8 +74,8 @@ class SecretPhrasePage extends GetView<WalletController> {
                           //     // fontSize: 16.0
                           // );
                         },
-                        icon: Image.asset('assets/images/icons/copy.png'),
-                        label: Text('Copy',style: Themes.dark.textTheme.subtitle2,),
+                        icon: Image.asset('assets/images/icons/copy.png',color: Get.theme.primaryColor,),
+                        label: Text('Copy',style: TextStyle(color: Get.theme.primaryColor),),
                       ),
                     ),
                     const SizedBox(height: 16.0,),
@@ -118,6 +118,7 @@ class SecretPhrasePage extends GetView<WalletController> {
                   children: [
                     Expanded(
                         child: ElevatedButton(
+                            style:Get.isDarkMode? Themes.dark.elevatedButtonTheme.style:Themes.light.elevatedButtonTheme.style,
                             onPressed: () {
                               Get.toNamed(AppRoutes.verifySecretPhrasePage,arguments: controller.secretPhraseList);
                             }, child: const Text("Continue"))),

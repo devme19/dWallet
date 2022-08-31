@@ -105,6 +105,7 @@ class VerifySecretPhrasePage extends GetView<WalletController> {
                   children: [
                     Expanded(
                         child: ElevatedButton(
+                            style:Get.isDarkMode? Themes.dark.elevatedButtonTheme.style:Themes.light.elevatedButtonTheme.style,
                             onPressed: () async{
                               if(controller.verifySecretPhrase()){
                                 controller.savePrivateKey();

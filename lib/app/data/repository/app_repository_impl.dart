@@ -222,6 +222,16 @@ class AppRepositoryImpl implements AppRepository {
       TransactionInformation transaction =
       await Client().web3(apiUrl).getTransactionByHash(txHash);
       print(transaction);
+
+      final token = Token(address: EthereumAddress.fromHex(contractAddress!), client: Client().web3(apiUrl));
+
+      // listen for the Transfer event when it's emitted by the contract above
+      final subscription = token.transferEvents().take(1).listen((event) {
+        print('//////////////////////////////////////////////////////////');
+        print('${event.from} sent ${event.value} MetaCoins to ${event.to}!');
+        print('//////////////////////////////////////////////////////////');
+      });
+
       return Right(transaction);
     }catch (e) {
       return Left(

@@ -13,14 +13,14 @@ class TextFieldWidget extends StatelessWidget {
       margin: const EdgeInsets.all(3.0),
       padding: const EdgeInsets.only(left: 4),
       decoration: BoxDecoration(
-          border: Border.all(color: IColor().DARK_TEXT_COLOR.withOpacity(0.6)),
+          border: Border.all(color: Colors.grey),
           borderRadius: BorderRadius.circular(11.0)),
       child: Row(
         children: [
           Text(
             '$index - ',
             style: TextStyle(
-              color: IColor().DARK_TEXT_COLOR.withOpacity(0.6),
+              color: Colors.grey,
             ),
             textAlign: TextAlign.right,
           ),
@@ -28,7 +28,7 @@ class TextFieldWidget extends StatelessWidget {
             child: TextField(
               controller: controller,
               cursorColor: Colors.white,
-              style: const TextStyle(fontSize: 16, color: Colors.white),
+              style: const TextStyle(fontSize: 16, color: Colors.grey),
               maxLines: 1,
               decoration: InputDecoration(
                   focusedBorder: const OutlineInputBorder(

@@ -29,6 +29,7 @@ import 'package:dwallet/app/presantation/pages/global_widgets/success_dialog.dar
 import 'package:dwallet/app/presantation/pages/secret_phrase_page/widget/secret_phrase_item_widget.dart';
 import 'package:dwallet/app/presantation/routes/app_routes.dart';
 import 'package:dwallet/app/presantation/utils/state_status.dart';
+import 'package:dwallet/app/web3/src/token.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';

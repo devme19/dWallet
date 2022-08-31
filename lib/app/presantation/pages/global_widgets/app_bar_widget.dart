@@ -17,7 +17,7 @@ class AppBarWidget extends StatelessWidget {
               },
               icon: Icon(
                 Icons.arrow_back,
-                color: Themes.dark.iconTheme.color,
+                color: Get.theme.primaryColor,
               )),
         ],
     ),

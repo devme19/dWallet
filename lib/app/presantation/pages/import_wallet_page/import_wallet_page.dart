@@ -128,10 +128,10 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
                                 });
                               },
                               child: SecretPhraseLength(
-                                lengthCOlor: index == 12 ? Colors.black : Colors.white,
+                                lengthCOlor: index == 12 ?Get.isDarkMode? Colors.black : Colors.white:Get.isDarkMode?Colors.white : Colors.black,
                                 length: 12,
                                 fillColor:
-                                index == 12 ? Colors.white : Colors.transparent,
+                                index == 12 ? Get.isDarkMode?Colors.white:Colors.black:Colors.transparent,
                               )),
                           GestureDetector(
                               onTap: () {
@@ -140,10 +140,10 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
                                 });
                               },
                               child: SecretPhraseLength(
-                                lengthCOlor: index == 16 ? Colors.black : Colors.white,
+                                lengthCOlor: index == 16 ? Get.isDarkMode? Colors.black : Colors.white:Get.isDarkMode?Colors.white : Colors.black,
                                 length: 16,
                                 fillColor:
-                                index == 16 ? Colors.white : Colors.transparent,
+                                index == 16 ? Get.isDarkMode?Colors.white:Colors.black:Colors.transparent,
                               )),
                           GestureDetector(
                               onTap: () {
@@ -153,9 +153,9 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
                               },
                               child: SecretPhraseLength(
                                 length: 24,
-                                lengthCOlor: index == 24 ? Colors.black : Colors.white,
+                                lengthCOlor: index == 24 ? Get.isDarkMode? Colors.black : Colors.white:Get.isDarkMode?Colors.white : Colors.black,
                                 fillColor:
-                                index == 24 ? Colors.white : Colors.transparent,
+                                index == 24 ? Get.isDarkMode?Colors.white:Colors.black:Colors.transparent,
                               )),
                         ],
                       ),
@@ -173,8 +173,8 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
                   print("paste");
                   pasteSecretPhrases();
                 },
-                icon: Image.asset('assets/images/icons/paste.png'),
-                label: Text('Paste',style: Themes.dark.textTheme.subtitle2,),
+                icon: Image.asset('assets/images/icons/paste.png',color: Get.theme.primaryColor),
+                label: Text('Paste',style: TextStyle(color: Get.theme.primaryColor),),
               ),
             ),
             const SizedBox(height: 16.0,),
@@ -182,6 +182,7 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
               children: [
                 Expanded(
                     child: ElevatedButton(
+                        style:Get.isDarkMode? Themes.dark.elevatedButtonTheme.style:Themes.light.elevatedButtonTheme.style,
                         onPressed: () {
                           String secretPhrase="";
                           for(TextEditingController item in textEditingControllers){

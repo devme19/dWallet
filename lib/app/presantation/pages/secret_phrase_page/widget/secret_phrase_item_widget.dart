@@ -34,12 +34,12 @@ class _SecretPhraseItemWidgetState extends State<SecretPhraseItemWidget> {
         padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
           color: selected?IColor().DARK_TEXT_COLOR.withOpacity(0.6):Colors.transparent,
-            border: Border.all(color: IColor().DARK_TEXT_COLOR.withOpacity(0.6)),
+            border: Border.all(color: Colors.grey),
           borderRadius: BorderRadius.circular(16.0)
         ),
         child: Row(
           children: [
-            widget.remove==null?widget.secretItem!.index!= null?Text('${widget.secretItem!.index!}- ',style: TextStyle(color: IColor().DARK_TEXT_COLOR.withOpacity(0.6)),):Container():Container(),
+            widget.remove==null?widget.secretItem!.index!= null?Text('${widget.secretItem!.index!}- ',style: TextStyle(color: Colors.grey),):Container():Container(),
             Text(widget.secretItem!.title!,style: const TextStyle(fontWeight: FontWeight.bold),),
           ],
         ),

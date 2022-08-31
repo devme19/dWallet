@@ -11,7 +11,8 @@ class SettingPage extends GetView<SettingController> {
     return Scaffold(
         appBar: AppBar(),
         body: Obx(
-          () => Column(
+          () =>
+              Column(
             children: [
               InkWell(
                 onTap: () =>

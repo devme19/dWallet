@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dwallet/app/presantation/pages/intro_page/widget/page_view_item_widget.dart';
+import 'package:get/get.dart';
 import 'package:page_view_indicators/circle_page_indicator.dart';
 
 class PageViewWidget extends StatefulWidget {
@@ -33,8 +34,8 @@ class _PageViewWidgetState extends State<PageViewWidget> {
         CirclePageIndicator(
           currentPageNotifier: curentPageNotifier,
           itemCount: 3,
-          selectedDotColor: const Color(0xffFFD60A),
-          dotColor: Colors.white,
+          selectedDotColor: Get.theme.primaryColor,
+          dotColor:Get.isDarkMode? Colors.white:Colors.black54,
         )
       ],
     );
