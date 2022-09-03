@@ -44,7 +44,8 @@ class _AssetsItemWidgetState extends State<AssetsItemWidget> {
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
                         color: Color(0xffF7931A)),
-                    child: Image.network(widget.coin!.imageUrl!),
+                    child: widget.coin!.imageUrl!.isEmpty?Image.asset('assets/images/crypto.png',color: Get.theme.primaryColor,): Image.network(widget.coin!.imageUrl!)
+                    // Image.network(widget.coin!.imageUrl!),
                   ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -76,6 +77,7 @@ class _AssetsItemWidgetState extends State<AssetsItemWidget> {
                     setState(() {
                       widget.coin!.enable = value;
                       controller.saveCoins();
+                      controller.updateBalance();
                     });
                   })
             ],

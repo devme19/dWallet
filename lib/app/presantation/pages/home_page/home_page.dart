@@ -1,3 +1,4 @@
+import 'package:dwallet/app/data/data_sources/remote/client.dart';
 import 'package:dwallet/app/data/models/coin_model.dart';
 import 'package:dwallet/app/presantation/controllers/setting_controller.dart';
 import 'package:dwallet/app/presantation/controllers/wallet_controller.dart';
@@ -10,6 +11,8 @@ import 'package:dwallet/app/presantation/pages/send_page/send_page.dart';
 import 'package:dwallet/app/presantation/pages/setting_page/setting_page.dart';
 import 'package:dwallet/app/presantation/routes/app_routes.dart';
 import 'package:dwallet/app/presantation/theme/themes.dart';
+import 'package:dwallet/app/web3/src/credentials/address.dart';
+import 'package:dwallet/app/web3/src/token.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:get/get.dart';
@@ -28,6 +31,14 @@ class HomePage extends GetView<WalletController> {
       SafeArea(
         child:
         Scaffold(
+          // floatingActionButton: FloatingActionButton(
+          //   onPressed: (){
+          //     final token = Token(address: EthereumAddress.fromHex("0xa36085F69e2889c224210F603D836748e7dC0088"), client: Client().web3WebSocket("https://kovan.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",webSocketUrl: "ws://localhost:8545"));
+          //     final subscription = token.transferEvents().take(1).listen((event) {
+          //       print('${event.from} sent ${event.value} Link to ${event.to}!');
+          //     });
+          //   },
+          // ),
             backgroundColor: Colors.transparent,
             body:
             Obx(()=>LiquidPullToRefresh(
@@ -241,7 +252,7 @@ class HomePage extends GetView<WalletController> {
                                   AssetPage()).then((value)
                               {
                                 controller.clearSearch();
-                                controller.loadCoins();
+                                // controller.loadCoins();
                               });
                               // showModalBottomSheet(
                               //     backgroundColor: Colors.transparent,
@@ -383,7 +394,7 @@ class HomePage extends GetView<WalletController> {
                               isScrollControlled: true,
                               CoinPage(
                                 )).then((value) {
-                                  controller.loadCoins();
+                                  // controller.loadCoins();
                           });
                           controller.clearSearch();
                           searchController.clear();

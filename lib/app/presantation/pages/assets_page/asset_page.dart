@@ -90,7 +90,7 @@ class AssetPage extends GetView<WalletController> {
                         TextField(
                           controller: searchController,
                           onChanged: controller.searchCoin,
-                          autofocus: true,
+                          autofocus: false,
                           textAlignVertical: TextAlignVertical.bottom,
                           cursorColor: Colors.white,
                           decoration: InputDecoration(

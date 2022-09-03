@@ -117,7 +117,8 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
                     ),
                     const SizedBox(height: 16.0,),
                     Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 100),
+                      width: 200,
+                      // margin: const EdgeInsets.symmetric(horizontal: 50),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [

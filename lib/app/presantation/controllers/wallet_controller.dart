@@ -200,6 +200,9 @@ class WalletController extends GetxController{
         String ids ='';
         for(CoinModel coin in filteredCoins){
           ids += '${coin.coingeckoId!},';
+          if(coin.coingeckoId == ""){
+            getTokenBalance(coin.contractAddress!, coin, coin.jrpcApi![0]);
+          }
         }
         ids= ids.substring(0,ids.length-1);
         getCoinsPrice(ids);
@@ -288,7 +291,7 @@ class WalletController extends GetxController{
         apiUrl: url
     )).then((response) {
       if(response.isRight){
-        token.balance = getValueInUnit(response.right, int.parse(tokenDecimal.value));
+        token.balance = getValueInUnit(response.right, int.parse(token.decimal.toString()));
         // Get.snackbar("Result", token.balance.toString());
         update();
       }else if(response.isLeft){
@@ -331,6 +334,17 @@ class WalletController extends GetxController{
 
       }
     });
+  }
+  updateBalance(){
+    double tBalance = 0.0;
+    for(CoinModel coin in coins){
+      if(coin.enable!)
+      {
+        tBalance+=coin.usd!*coin.balance!;
+      }
+    }
+    totalBalance = tBalance;
+    update();
   }
   createNewWallet()async{
     secretPhraseList.clear();
@@ -407,7 +421,15 @@ class WalletController extends GetxController{
     Either response= await getBalanceUseCase.call(Params(value: url));
     if(response.isRight){
       coin.balance = response.right;
-      totalBalance += (coin.usd! * coin.balance!);
+      // totalBalance += (coin.usd! * coin.balance!);
+      double tBalance = 0.0;
+      for(CoinModel coin in coins){
+        if(coin.enable!)
+        {
+          tBalance+=coin.usd!*coin.balance!;
+        }
+      }
+      totalBalance = tBalance;
       update();
     }
   }
@@ -685,6 +707,12 @@ class WalletController extends GetxController{
         retryCount=0;
         TransactionInformation transaction = response.right;
         Fluttertoast.showToast(msg:'The transaction was completed successfully');
+        if(coin.contractAddress==null){
+          getBalance(coin.jrpcApi![0],coin);
+        }
+        else{
+          getTokenBalance(coin.contractAddress!, coin, coin.jrpcApi![0]);
+        }
         coin.transactions.add(
             TransactionModel(
                 txHash: transaction.hash,
@@ -698,6 +726,7 @@ class WalletController extends GetxController{
         Get.back();
         print('TxHash ${response.right}');
       }else if(response.isLeft){
+        Get.back();
         ServerFailure failure = response.left as ServerFailure;
         if(failure.errorMessage!.toLowerCase().contains("insufficient funds for gas")){
           Fluttertoast.showToast(msg: "insufficient funds for gas");
@@ -718,9 +747,23 @@ class WalletController extends GetxController{
 
   getTransactions(List<TransactionModel> tx){
     transactions.clear();
-
+    for(TransactionModel transaction in tx)
     for(TransactionModel transaction in tx){
       transactions.add(TransactionWidgetItem(tx: transaction,));
+    }
+  }
+  String getDateTime(String dateTime){
+    DateTime now = DateTime.now();
+    DateTime transactionDateTime = DateTime.parse(dateTime);
+    final difference = now.difference(transactionDateTime).inDays;
+    if(difference == 0){
+      return "Today";
+    }
+    else if(difference == 1){
+      return "Yesterday";
+    }
+    else {
+      return DateFormat.yMMMEd().format(transactionDateTime);
     }
   }
   getGas(String url,CoinModel coin){

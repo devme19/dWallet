@@ -50,6 +50,7 @@ dependencies:
   qr_flutter: ^4.0.0
   share_plus: ^4.0.10+1
   url_launcher: ^6.1.5
+  web_socket_channel: ^2.2.0
 
 
 dev_dependencies:

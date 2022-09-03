@@ -5,6 +5,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../web3/web3dart.dart';
+import 'package:web_socket_channel/io.dart';
 
 
 class Client {
@@ -17,8 +18,23 @@ class Client {
   GetStorage? box;
 
   http.Client httpClient = http.Client();
-  Web3Client web3(String url){
-    return Web3Client(url, httpClient);
+  Web3Client web3(String url,{String? webSocketUrl}){
+    return Web3Client(
+        url,
+        httpClient,
+      socketConnector: () {
+        return IOWebSocketChannel.connect(url).cast<String>();
+      },
+    );
+  }
+  Web3Client web3WebSocket(String url,{String? webSocketUrl}){
+    return Web3Client(
+      url,
+      httpClient,
+      socketConnector: () {
+        return IOWebSocketChannel.connect(webSocketUrl!).cast<String>();
+      },
+    );
   }
   init() {
     dio.options.baseUrl = baseUrl;
