@@ -7,6 +7,7 @@ import 'package:dwallet/app/data/models/coin_info_model.dart';
 import 'package:dwallet/app/data/models/coin_model.dart';
 import 'package:dwallet/app/data/models/network_model.dart';
 import 'package:dwallet/app/data/models/token_model.dart';
+import 'package:dwallet/app/data/models/transaction_date_model.dart';
 import 'package:dwallet/app/data/models/transaction_model.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_balance_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/home/get_coins_from_local_usecase.dart';
@@ -36,6 +37,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:bip39/bip39.dart' as bip39;
+import 'package:intl/intl.dart';
 import '../../domain/use_cases/home/save_eth_address_usecase.dart';
 import '../../web3/src/crypto/formatting.dart';
 import '../../web3/web3dart.dart';
@@ -747,24 +749,61 @@ class WalletController extends GetxController{
 
   getTransactions(List<TransactionModel> tx){
     transactions.clear();
-    for(TransactionModel transaction in tx)
-    for(TransactionModel transaction in tx){
-      transactions.add(TransactionWidgetItem(tx: transaction,));
+    List<TransactionModel> tx1=[];
+    List<TransactionModel> tx2=[];
+    List<TransactionModel> tx3=[];
+    List<TransactionDateModel> tx4=[];
+    tx2.addAll(tx);
+    tx1.addAll(tx);
+    int index=0;
+    for(int i=0;i<tx1.length;i++){
+      index = tx3.length;
+      for(int j=i;j<tx2.length;j++){
+        if(compareDate(date1: tx1[i].date,date2: tx2[j].date)){
+          if(!tx3.contains(tx1[i])){
+            tx3.add(tx1[i]);
+          }
+          if(!tx3.contains(tx2[j])){
+            tx3.add(tx2[j]);
+          }
+        }
+
+      }
+      if(index<tx3.length){
+        tx4.add(TransactionDateModel(date: tx3[index].date,transactions: tx3.sublist(index)));
+      }
     }
+    for(int i=0;i<tx4.length;i++){
+      transactions.add(TransactionWidgetItem(tx: tx4[i],));
+    }
+    // tx4.map((e) => transactions.add(TransactionWidgetItem(tx: e,)));
+    // transactions.addAll(TransactionWidgetItem(tx: transaction,));
+    // for(TransactionModel transaction in tx){
+    //   if(getDateTime(transaction.date!) == 0){
+    //     tx1.add(transaction);
+    //   }
+    // }
+    // for(TransactionModel transaction in tx){
+    //   transactions.add(TransactionWidgetItem(tx: transaction,));
+    // }
   }
-  String getDateTime(String dateTime){
+  int getDateTime(String dateTime){
     DateTime now = DateTime.now();
     DateTime transactionDateTime = DateTime.parse(dateTime);
-    final difference = now.difference(transactionDateTime).inDays;
-    if(difference == 0){
-      return "Today";
+    return now.difference(transactionDateTime).inDays;
+  }
+  bool compareDate({String? date1, String? date2}){
+    DateTime dateTime1 = DateTime.parse(date1!);
+    DateTime dateTime2 = DateTime.parse(date2!);
+    if(dateTime1.year == dateTime2.year){
+      if(dateTime1.month == dateTime2.month){
+        if(dateTime1.day == dateTime2.day){
+          return true;
+        }
+        return false;
+      }
     }
-    else if(difference == 1){
-      return "Yesterday";
-    }
-    else {
-      return DateFormat.yMMMEd().format(transactionDateTime);
-    }
+    return false;
   }
   getGas(String url,CoinModel coin){
     GetGasUseCase getGasUseCase = Get.find();
