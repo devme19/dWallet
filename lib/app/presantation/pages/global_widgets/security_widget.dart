@@ -281,8 +281,8 @@ class _SecurityWidgetState extends State<SecurityWidget> {
           createPassCode(num);
         },
         child: Container(
-          height: 60,
-          width: 60,
+          height: 80,
+          width: 80,
           decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: Get.isDarkMode?Colors.black:Colors.white
@@ -293,8 +293,8 @@ class _SecurityWidgetState extends State<SecurityWidget> {
   }
   Widget iconKey(String iconPath){
     return  Container(
-      height: 60,
-      width: 60,
+      height: 80,
+      width: 80,
       decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: Get.isDarkMode?Colors.black:Colors.white
