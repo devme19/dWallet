@@ -78,6 +78,7 @@ class HomePage extends GetView<WalletController> {
                     Get.bottomSheet(
                         isScrollControlled: true,
                         Container(
+                          color: Colors.transparent,
                           margin: EdgeInsets.only(top: 80),
                             child: SettingPage()));
                   },

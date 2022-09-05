@@ -9,6 +9,8 @@ import 'package:dwallet/app/domain/use_cases/home/save_coin_to_local_usecase.dar
 import 'package:dwallet/app/domain/use_cases/home/send_transaction_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/private_key/save_private_key_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/setting/language/set_language_use_case.dart';
+import 'package:dwallet/app/domain/use_cases/setting/security/get_passcode_usecase.dart';
+import 'package:dwallet/app/domain/use_cases/setting/security/set_passcode_usecase.dart';
 import 'package:dwallet/app/domain/use_cases/setting/theme/get_theme_mode_use_case.dart';
 import 'package:dwallet/app/domain/use_cases/setting/theme/set_theme_mode_use_case.dart';
 import 'package:dwallet/app/presantation/controllers/setting_controller.dart';
@@ -49,6 +51,10 @@ class MainBinding extends Bindings {
         repository:Get.find<AppRepository>()
     ));
     Get.put<SettingController>(SettingController());
+    Get.put<GetPassCodeUseCase>(
+        GetPassCodeUseCase(repository: Get.find<AppRepository>()));
+    Get.put<SetPassCodeUseCase>(
+        SetPassCodeUseCase(repository: Get.find<AppRepository>()));
     Get.put<GetLanguageUseCase>(
         GetLanguageUseCase(repository: Get.find<AppRepository>()));
     Get.put<GetThemeModeUseCase>(

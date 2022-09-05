@@ -13,6 +13,7 @@ import 'package:dwallet/app/presantation/pages/verify_secret_phrase_page/verify_
 import 'package:get/get.dart';
 
 import '../bindings/setting_page_binding.dart';
+import '../pages/security_page/security_page.dart';
 
 class AppRoutes {
   static const String introPage = "/introPage";
@@ -24,6 +25,7 @@ class AppRoutes {
   static const String verifySecretPhrasePage = "/verifySecretPhrasePage";
   static const String importWalletPage = "/importWalletPage";
   static const String coinPage = "/coinPage";
+  static const String securityPage = "/securityPage";
 }
 
 class App {
@@ -50,8 +52,12 @@ class App {
       page: () =>  CoinPage(),
     ),
     GetPage(
+      name: AppRoutes.securityPage,
+      page: () =>  SecurityPage(),
+    ),
+    GetPage(
         name: AppRoutes.settingPage,
-        page: () => const SettingPage(),
+        page: () => SettingPage(),
         bindings: [MainBinding(), SettingPageBinding()]),
     GetPage(
         name: AppRoutes.secretPhrasePage, page: () => SecretPhrasePage()),

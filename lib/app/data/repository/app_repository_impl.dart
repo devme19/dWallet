@@ -391,4 +391,24 @@ class AppRepositoryImpl implements AppRepository {
     }
   }
 
+  @override
+  Future<Either<Failure, String>> getPassCode() async{
+    try {
+      var response = localDataSource!.getPassCode();
+      return Right(response);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> setPassCode(String passCode) async{
+    try {
+      var response = localDataSource!.setPassCode(passCode);
+      return Right(response);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.toString()));
+    }
+  }
+
 }

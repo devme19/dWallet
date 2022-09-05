@@ -18,6 +18,8 @@ abstract class AppRepository {
   Future<Either<Failure, bool>> getThemeMode();
   Future<Either<Failure, bool>> setLanguage(bool isEn);
   Future<Either<Failure, bool>> getLanguage();
+  Future<Either<Failure, bool>> setPassCode(String passCode);
+  Future<Either<Failure, String>> getPassCode();
   /////////////////////  SPLASH /////////////////////////
   Future<Either<Failure, bool>> savePrivateKey(String key);
   Future<Either<Failure, String>> getPrivateKey();

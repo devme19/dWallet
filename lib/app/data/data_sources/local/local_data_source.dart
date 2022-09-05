@@ -15,7 +15,9 @@ abstract class AppLocalDataSource {
   bool getThemeMode();
   bool setLanguage(bool isEn);
   bool getLanguage();
+  bool setPassCode(String passCode);
 
+  String getPassCode();
   bool savePrivateKey(String key);
   String getPrivateKey();
   bool saveEthereumAddress(String key);
@@ -27,6 +29,7 @@ abstract class AppLocalDataSource {
 class AppLocalDateSourceImpl implements AppLocalDataSource {
   GetStorage box = GetStorage();
   String profileKey = "profileKey";
+  String passCodeKey = "passCodeKey";
   String tokenKey = "tokenKey";
   String refreshTokenKey = "refreshTokenKey";
   String themeKey = "themeKey";
@@ -205,6 +208,26 @@ class AppLocalDateSourceImpl implements AppLocalDataSource {
   bool saveCoins(String coins) {
     try {
       box.write(coinsKey, coins);
+      return true;
+    } catch (e) {
+      throw CacheException(message: e.toString());
+    }
+  }
+
+  @override
+  String getPassCode() {
+    try {
+      return box.read(passCodeKey) ?? "";
+    } catch (e) {
+      throw CacheException(message: e.toString());
+    }
+
+  }
+
+  @override
+  bool setPassCode(String passCode) {
+    try {
+      box.write(passCodeKey, passCode);
       return true;
     } catch (e) {
       throw CacheException(message: e.toString());
